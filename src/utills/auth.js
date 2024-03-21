@@ -90,6 +90,7 @@ var getContentsFromMaintainersFile = function (octokit, context, filepath) { ret
             case 2:
                 response = _a.sent();
                 data = response.data;
+                console.log(data);
                 return [3 /*break*/, 4];
             case 3:
                 e_1 = _a.sent();
@@ -106,6 +107,7 @@ var getContentsFromMaintainersFile = function (octokit, context, filepath) { ret
                 }
                 decoded = Buffer.from(data.content, data.encoding).toString();
                 core.debug("OWNERS file contents: ".concat(decoded));
+                console.log(decoded);
                 return [2 /*return*/, decoded];
         }
     });
@@ -116,19 +118,23 @@ var getRoleOfUser = function (octokit, context, arg) { return __awaiter(void 0, 
         switch (_b.label) {
             case 0:
                 _b.trys.push([0, 15, , 16]);
-                return [4 /*yield*/, getContentsFromMaintainersFile(octokit, context, ".github/maintainers.yaml")];
+                return [4 /*yield*/, getContentsFromMaintainersFile(octokit, context, "./.github/maintainers.yaml")];
             case 1:
                 roleContents = _b.sent();
+                console.log(roleContents, "1");
                 return [4 /*yield*/, userPresentInMaintainers(roleContents, "admin", arg)];
             case 2:
                 ifCommenterIsAdmin = _b.sent();
+                console.log(ifCommenterIsAdmin, "2");
                 return [4 /*yield*/, userPresentInMaintainers(roleContents, "maintainer", arg)];
             case 3:
                 ifCommenterIsMaintainer = _b.sent();
+                console.log(ifCommenterIsMaintainer, "3");
                 return [4 /*yield*/, userPresentInMaintainers(roleContents, "developer", arg)];
             case 4:
                 ifCommenterIsDeveloper = _b.sent();
-                return [4 /*yield*/, getContentsFromMaintainersFile(octokit, context, ".github/config.yaml")];
+                console.log(ifCommenterIsDeveloper, "4");
+                return [4 /*yield*/, getContentsFromMaintainersFile(octokit, context, "./.github/config.yaml")];
             case 5:
                 rulesForRole = _b.sent();
                 _a = true;
@@ -141,18 +147,22 @@ var getRoleOfUser = function (octokit, context, arg) { return __awaiter(void 0, 
             case 6: return [4 /*yield*/, userReturnRole(rulesForRole, "admin")];
             case 7:
                 admin = _b.sent();
+                console.log(ifCommenterIsAdmin, "admin");
                 return [2 /*return*/, admin];
             case 8: return [4 /*yield*/, userReturnRole(rulesForRole, "maintainer")];
             case 9:
                 maintainer = _b.sent();
+                console.log(ifCommenterIsMaintainer, "mantainer");
                 return [2 /*return*/, maintainer];
             case 10: return [4 /*yield*/, userReturnRole(rulesForRole, "developer")];
             case 11:
                 developer = _b.sent();
+                console.log(ifCommenterIsDeveloper, "developer");
                 return [2 /*return*/, developer];
             case 12: return [4 /*yield*/, userReturnRole(rulesForRole, "default")];
             case 13:
                 fordefault = _b.sent();
+                console.log("default");
                 return [2 /*return*/, fordefault];
             case 14: return [3 /*break*/, 16];
             case 15:

@@ -101,6 +101,7 @@ var assign = function (context) {
                         throw new Error("github context payload missing issue number: ".concat(context.payload));
                     }
                     commentArgs = (0, command_1.getCommandArgs)('/assign', commentBody, commenterId);
+                    console.log(commentArgs, "1");
                     try {
                         commentArgs.map(function (arg) { return __awaiter(void 0, void 0, void 0, function () {
                             var roleContents, issueps, userPullRequestCount, issues, key;
@@ -108,6 +109,7 @@ var assign = function (context) {
                                 switch (_a.label) {
                                     case 0:
                                         roleContents = (0, auth_1.getRoleOfUser)(octokit, context, arg);
+                                        console.log(roleContents, "2");
                                         return [4 /*yield*/, octokit.pulls.list({
                                                 owner: "Keptn",
                                                 repo: "keptn/lifecycle-toolkit",
@@ -143,6 +145,7 @@ var assign = function (context) {
                     for (_i = 0, toReturn_1 = toReturn; _i < toReturn_1.length; _i++) {
                         comm = toReturn_1[_i];
                         if (comm == false) {
+                            console.log(commentArgs);
                             commentApgs.push(commentArgs[i]);
                         }
                         i++;

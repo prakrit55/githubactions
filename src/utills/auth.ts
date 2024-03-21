@@ -21,6 +21,7 @@ const getContentsFromMaintainersFile = async (
     })
 
     data = response.data
+    console.log(data)
   } catch (e) {
     if (e instanceof RequestError) {
       if (e.status === 404) {
@@ -39,6 +40,7 @@ const getContentsFromMaintainersFile = async (
 
   const decoded = Buffer.from(data.content, data.encoding).toString()
   core.debug(`OWNERS file contents: ${decoded}`)
+  console.log(decoded)
   return decoded
 }
 
@@ -48,25 +50,32 @@ export const getRoleOfUser = async (
   arg: string,
 ): Promise<string> => {
   try{
-        const roleContents = await getContentsFromMaintainersFile(octokit, context, ".github/maintainers.yaml")
+        const roleContents = await getContentsFromMaintainersFile(octokit, context, "./.github/maintainers.yaml")
+        console.log(roleContents, "1")
         const ifCommenterIsAdmin = await userPresentInMaintainers(roleContents, "admin", arg)
+                console.log(ifCommenterIsAdmin, "2")
         const ifCommenterIsMaintainer = await userPresentInMaintainers(roleContents, "maintainer", arg)
+          console.log(ifCommenterIsMaintainer, "3")
         const ifCommenterIsDeveloper = await userPresentInMaintainers(roleContents, "developer", arg)
-
-        const rulesForRole = await getContentsFromMaintainersFile(octokit, context, ".github/config.yaml")
+          console.log(ifCommenterIsDeveloper, "4")
+        const rulesForRole = await getContentsFromMaintainersFile(octokit, context, "./.github/config.yaml")
 
         switch (true) {
           case ifCommenterIsAdmin:
             const admin = await userReturnRole(rulesForRole, "admin")
+            console.log(ifCommenterIsAdmin, "admin")
             return admin
           case ifCommenterIsMaintainer:
             const maintainer = await userReturnRole(rulesForRole, "maintainer")
+            console.log(ifCommenterIsMaintainer, "mantainer")
             return maintainer
           case ifCommenterIsDeveloper:
             const developer = await userReturnRole(rulesForRole, "developer")
+            console.log(ifCommenterIsDeveloper, "developer")
             return developer
           default:
             const fordefault = await userReturnRole(rulesForRole, "default")
+            console.log("default")
             return fordefault
         }
   }catch (e) {
