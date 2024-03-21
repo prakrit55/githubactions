@@ -74,6 +74,7 @@ export const assign = async (
   await Promise.all(
     commentArgs.map(async arg => {
       console.log(arg, "arg")
+      let userPullRequestCount = 0
       const roleContent: any = getRoleOfUser(arg, roleContents, rulesForRole)
       console.log(roleContent, "2")
 
@@ -82,7 +83,11 @@ export const assign = async (
         repo: "githubactions",
         state: "open",
       })
-      const userPullRequestCount = issueps.data.filter(pr => pr.user.login == arg).length
+      if (issueps.data.length == 0) {
+        userPullRequestCount= 0
+      } else {
+        userPullRequestCount = issueps.data.filter(pr => pr.user.login == arg).length
+      }
 
       const issues = await octokit.issues.listForRepo ({
         owner: "prakrit55",
