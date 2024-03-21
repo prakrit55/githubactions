@@ -63,7 +63,7 @@ export const assign = async (
     }
       
 let i = 0
-for (const comm of tReturn) {
+for (const comm of toReturn) {
   if (comm == false) {
     commentApgs.push(commentArgs[i])
   } 
