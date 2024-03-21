@@ -60,14 +60,14 @@ export const assign = async (
 
       const issueps = await octokit.pulls.list({
         owner: "prakrit55",
-        repo: "prakrit55/githubactions",
+        repo: "githubactions",
         state: "open",
       })
       const userPullRequestCount = issueps.data.filter(pr => pr.user.login == arg).length
 
       const issues = await octokit.issues.listForRepo ({
         owner: "prakrit55",
-        repo: 'prakrit55/githubactions',
+        repo: "githubactions",
         assignee: arg,
       })
       for (const key in roleContent) {
