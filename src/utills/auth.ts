@@ -50,16 +50,18 @@ export const getRoleOfUser = async (
   context: Context,
   arg: string,
 ): Promise<string> => {
+  let roleContents, rulesForRole = ""
   try{
-        const roleContents = await getContentsFromMaintainersFile(octokit, context, 'maintainers.yaml')
+        roleContents = await getContentsFromMaintainersFile(octokit, context, 'maintainers.yaml')
+        rulesForRole = await getContentsFromMaintainersFile(octokit, context, '.github/config.yaml')
         console.log(roleContents, "1")
+        if ( roleContents != "") {
         let ifCommenterIsAdmin = userPresentInMaintainers(roleContents, "admin", arg)
-                console.log(ifCommenterIsAdmin, "2")
+          console.log(ifCommenterIsAdmin, "2")
         const ifCommenterIsMaintainer = userPresentInMaintainers(roleContents, "maintainer", arg)
           console.log(ifCommenterIsMaintainer, "3")
         const ifCommenterIsDeveloper = userPresentInMaintainers(roleContents, "developer", arg)
           console.log(ifCommenterIsDeveloper, "4")
-        const rulesForRole = await getContentsFromMaintainersFile(octokit, context, '.github/config.yaml')
         console.log(rulesForRole)
 
         switch (true) {
@@ -80,6 +82,7 @@ export const getRoleOfUser = async (
             console.log("default")
             return fordefault
         }
+      }
   }catch (e) {
     throw new Error(`could not get authorized user: ${e}`)
   }
