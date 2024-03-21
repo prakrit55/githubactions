@@ -1,6 +1,6 @@
 name: 'prow-github-actions'
 description: 'Prow inspired github CI/CD actions'
-author: 'John McBride'
+author: 'mmm'
 inputs:
   github-token:
     description: "Token used by prow actions to accomplish jobs and tasks. May be a bot user access token or the limited scope Github token"
@@ -19,4 +19,4 @@ branding:
   icon: anchor
 runs:
   using: 'node21'
-  main: 'dist/index.js'
+  main: './index.js'
