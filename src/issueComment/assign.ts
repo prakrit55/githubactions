@@ -4,7 +4,7 @@ import * as core from '@actions/core'
 import {Context} from '@actions/github/lib/context'
 
 import {getCommandArgs} from '../utills/command'
-import {getOrgCollabCommentUsers, checkCommenterAuth, getRoleOfUser} from '../utills/auth'
+import {getContentsFromMaintainersFile, checkCommenterAuth, getRoleOfUser} from '../utills/auth'
 
 /**
  * /assign will self assign with no argument
@@ -34,6 +34,13 @@ export const assign = async (
 
   let commentArgs: string[] = getCommandArgs('/assign', commentBody, commenterId)
   console.log(commentArgs, "1")
+
+  try{ 
+    let roleContents = await getContentsFromMaintainersFile(octokit, context, 'maintainers.yaml')
+    console.log(roleContents, "12")
+}catch (e) {
+  throw new Error(`could not get authorized user: ${e}`)
+}
 
   try {
   await Promise.all(

@@ -37,7 +37,7 @@ const userPresentInMaintainers =  (
 
 
 
-const getContentsFromMaintainersFile = async (
+export const getContentsFromMaintainersFile = async (
   octokit: github.GitHub,
   context: Context,
   filepath: string
@@ -79,53 +79,49 @@ export const getRoleOfUser = async (
   context: Context,
   arg: string,
 ): Promise<string> => { 
-
   let roleContents, rulesForRole = ""
 
-
-  try{ 
+    try{ 
         roleContents = await getContentsFromMaintainersFile(octokit, context, 'maintainers.yaml')
         console.log(roleContents, "1")
-  }catch (e) {
-    throw new Error(`could not get authorized user: ${e}`)
-  }
+    }catch (e) {
+      throw new Error(`could not get authorized user: ${e}`)
+    }
 
 
-  try{ 
+    try{ 
         rulesForRole = await getContentsFromMaintainersFile(octokit, context, '.github/config.yaml')
         console.log(roleContents, "1")
-  }catch (e) {
-    throw new Error(`could not get authorized user: ${e}`)
+    }catch (e) {
+      throw new Error(`could not get authorized user: ${e}`)
+    }
+
+  let ifCommenterIsAdmin = userPresentInMaintainers(roleContents, "admin", arg)
+    console.log(ifCommenterIsAdmin, "2")
+  const ifCommenterIsMaintainer = userPresentInMaintainers(roleContents, "maintainer", arg)
+    console.log(ifCommenterIsMaintainer, "3")
+  const ifCommenterIsDeveloper = userPresentInMaintainers(roleContents, "developer", arg)
+    console.log(ifCommenterIsDeveloper, "4")
+  console.log(rulesForRole)
+
+  switch (true) {
+    case ifCommenterIsAdmin:
+      const admin = userReturnRole(rulesForRole, "admin")
+      console.log(ifCommenterIsAdmin, "admin")
+      return admin
+    case ifCommenterIsMaintainer:
+      const maintainer = userReturnRole(rulesForRole, "maintainer")
+      console.log(ifCommenterIsMaintainer, "mantainer")
+      return maintainer
+    case ifCommenterIsDeveloper:
+      const developer = userReturnRole(rulesForRole, "developer")
+      console.log(ifCommenterIsDeveloper, "developer")
+      return developer
+    default:
+      const fordefault = userReturnRole(rulesForRole, "default")
+      console.log("default")
+      return fordefault
   }
-
-        let ifCommenterIsAdmin = userPresentInMaintainers(roleContents, "admin", arg)
-          console.log(ifCommenterIsAdmin, "2")
-        const ifCommenterIsMaintainer = userPresentInMaintainers(roleContents, "maintainer", arg)
-          console.log(ifCommenterIsMaintainer, "3")
-        const ifCommenterIsDeveloper = userPresentInMaintainers(roleContents, "developer", arg)
-          console.log(ifCommenterIsDeveloper, "4")
-        console.log(rulesForRole)
-
-        switch (true) {
-          case ifCommenterIsAdmin:
-            const admin = userReturnRole(rulesForRole, "admin")
-            console.log(ifCommenterIsAdmin, "admin")
-            return admin
-          case ifCommenterIsMaintainer:
-            const maintainer = userReturnRole(rulesForRole, "maintainer")
-            console.log(ifCommenterIsMaintainer, "mantainer")
-            return maintainer
-          case ifCommenterIsDeveloper:
-            const developer = userReturnRole(rulesForRole, "developer")
-            console.log(ifCommenterIsDeveloper, "developer")
-            return developer
-          default:
-            const fordefault = userReturnRole(rulesForRole, "default")
-            console.log("default")
-            return fordefault
-        }
-
-  return "not found"
 }
 /**
  * checkOrgMember will check to see if the given user is a repo org member
