@@ -51,6 +51,13 @@ export const assign = async (
       throw new Error(`could not get authorized user: ${e}`)
     }
 
+    const issueps = await octokit.pulls.list({
+      owner: "prakrit55",
+      repo: "githubactions",
+      state: "open",
+    })
+
+    console.log(issueps, "prs")
   try {
   await Promise.all(
     commentArgs.map(async arg => {
