@@ -16,12 +16,12 @@ const getContentsFromMaintainersFile = async (
   let data: any = undefined
   console.log(filepath)
   try {
-    const response = octokit.repos.getContents({
+    const response = await octokit.repos.getContents({
       ...context.repo,
       path: filepath
     })
 
-    data = response
+    data = response.data
     console.log(data, response, "no response")
   } catch (e) {
     if (e instanceof RequestError) {
@@ -53,53 +53,53 @@ export const getRoleOfUser = async (
   try{
         const roleContents = await getContentsFromMaintainersFile(octokit, context, 'maintainers.yaml')
         console.log(roleContents, "1")
-        const ifCommenterIsAdmin = await userPresentInMaintainers(roleContents, "admin", arg)
+        let ifCommenterIsAdmin = userPresentInMaintainers(roleContents, "admin", arg)
                 console.log(ifCommenterIsAdmin, "2")
-        const ifCommenterIsMaintainer = await userPresentInMaintainers(roleContents, "maintainer", arg)
+        const ifCommenterIsMaintainer = userPresentInMaintainers(roleContents, "maintainer", arg)
           console.log(ifCommenterIsMaintainer, "3")
-        const ifCommenterIsDeveloper = await userPresentInMaintainers(roleContents, "developer", arg)
+        const ifCommenterIsDeveloper = userPresentInMaintainers(roleContents, "developer", arg)
           console.log(ifCommenterIsDeveloper, "4")
         const rulesForRole = await getContentsFromMaintainersFile(octokit, context, '.github/config.yaml')
         console.log(rulesForRole)
 
         switch (true) {
           case ifCommenterIsAdmin:
-            const admin = await userReturnRole(rulesForRole, "admin")
+            const admin = userReturnRole(rulesForRole, "admin")
             console.log(ifCommenterIsAdmin, "admin")
             return admin
           case ifCommenterIsMaintainer:
-            const maintainer = await userReturnRole(rulesForRole, "maintainer")
+            const maintainer = userReturnRole(rulesForRole, "maintainer")
             console.log(ifCommenterIsMaintainer, "mantainer")
             return maintainer
           case ifCommenterIsDeveloper:
-            const developer = await userReturnRole(rulesForRole, "developer")
+            const developer = userReturnRole(rulesForRole, "developer")
             console.log(ifCommenterIsDeveloper, "developer")
             return developer
           default:
-            const fordefault = await userReturnRole(rulesForRole, "default")
+            const fordefault = userReturnRole(rulesForRole, "default")
             console.log("default")
             return fordefault
         }
   }catch (e) {
     throw new Error(`could not get authorized user: ${e}`)
   }
-  return ""
+  return "not found"
 }
 
-const userReturnRole = async (
+const userReturnRole = (
   maintanersFile: string,
   role: string,
-): Promise<string> => {
+): string => {
   const ruleData = yaml.load(maintanersFile) as any
   const fit = ruleData[role]
   return fit
 }
 
-const userPresentInMaintainers = async (
+const userPresentInMaintainers =  (
   maintainersFile: string,
   role: string,
   username: string,
-): Promise<boolean> => {
+): boolean => {
 
   core.debug(`checking if ${username} is in the ${role} in the OWNERS file`)
   const ownersData = yaml.load(maintainersFile) as any
