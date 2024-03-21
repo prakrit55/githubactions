@@ -7,19 +7,12 @@ jobs:
   execute:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v1
       - run: npm install
       - run: npm run build
       - uses: ./
         with:
           prow-commands: '/assign 
-            /unassign  
-            /area 
-            /kind 
-            /priority 
-            /remove 
-            /lgtm 
-            /close 
-            /reopen '
+            /unassign'
           github-token: "${{ secrets.GITHUB_TOKEN }}"
           configuration-path: .github/config.yaml
