@@ -26,7 +26,7 @@ export const assign = async (
   const commenterId: string = context.payload['comment']['user']['login']
   const commentBody: string = context.payload['comment']['body']
 
-  let roleContents, rulesForRole: any = ""
+  let roleContents, rulesForRole: any 
 
   if (issueNumber === undefined) {
     throw new Error(
