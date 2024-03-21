@@ -127,12 +127,14 @@ for (const comm of toReturn) {
 
     default:
       try {
-            await octokit.issues.addAssignees({
+            let namme = await octokit.issues.addAssignees({
               ...context.repo,
               issue_number: issueNumber,
               assignees: commentApgs
             })
+            console.log('Assignees added:', namme.data);
       } catch (e) {
+        console.error('Error adding assignees:', error);
         throw new Error(`could not add assignees: ${e}`)
       }
       break
