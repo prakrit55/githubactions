@@ -78,8 +78,8 @@ export const getRoleOfUser = async (
   // octokit: github.GitHub,
   // context: Context,
   arg: string,
-  roleContents: any,
-  rulesForRole: any,
+  roleContents: string,
+  rulesForRole: string,
 ): Promise<string> => { 
   // let roleContents, rulesForRole = ""
 
