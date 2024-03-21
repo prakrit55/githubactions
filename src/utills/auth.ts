@@ -51,7 +51,7 @@ export const getRoleOfUser = async (
   arg: string,
 ): Promise<string> => {
   try{
-        const roleContents = await getContentsFromMaintainersFile(octokit, context, '.github/maintainers.yaml')
+        const roleContents = await getContentsFromMaintainersFile(octokit, context, 'maintainers.yaml')
         console.log(roleContents, "1")
         const ifCommenterIsAdmin = await userPresentInMaintainers(roleContents, "admin", arg)
                 console.log(ifCommenterIsAdmin, "2")
