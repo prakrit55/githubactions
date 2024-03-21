@@ -33,6 +33,7 @@ export const assign = async (
   }
 
   let commentArgs: string[] = getCommandArgs('/assign', commentBody, commenterId)
+  console.log(commentArgs, "1")
 
   try {
     commentArgs.map(async arg => {
@@ -65,6 +66,7 @@ export const assign = async (
 let i = 0
 for (const comm of toReturn) {
   if (comm == false) {
+    console.log(commentArgs)
     commentApgs.push(commentArgs[i])
   } 
   i++
