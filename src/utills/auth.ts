@@ -16,12 +16,12 @@ const getContentsFromMaintainersFile = async (
   let data: any = undefined
   console.log(filepath)
   try {
-    const response = await octokit.repos.getContents({
+    const response = octokit.repos.getContents({
       ...context.repo,
       path: filepath
     })
 
-    data = response.data
+    data = response
     console.log(data, response, "no response")
   } catch (e) {
     if (e instanceof RequestError) {
