@@ -26,7 +26,7 @@ const getContentsFromMaintainersFile = async (
     if (e instanceof RequestError) {
       if (e.status === 404) {
         core.debug('No OWNERS file found')
-        return "couldnot find "
+        return "couldnot found "
       }
     }
 

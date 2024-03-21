@@ -37,6 +37,7 @@ export const assign = async (
 
   try {
     commentArgs.map(async arg => {
+      console.log(arg, "arg")
       const roleContents: any = getRoleOfUser(octokit, context, arg)
       console.log(roleContents, "2")
 
