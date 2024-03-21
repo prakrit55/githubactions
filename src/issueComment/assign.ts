@@ -85,7 +85,7 @@ export const assign = async (
         repo: "githubactions",
         state: "open",
       })
-      if (issueps.data.filter.length == 0) {
+      if (issueps.data.length == 0) {
         userPullRequestCount= 0
         console.log(issueps.data.filter.length)
       } else {
@@ -99,13 +99,11 @@ export const assign = async (
       })
 
       console.log(issues.data.length)
-      for (const key in roleContent) {
-        if (roleContent[key]['max-assigned-issues'] == issues.data.length || roleContent[key]['max-opened-prs'] == userPullRequestCount) {
+        if (roleContent['max-assigned-issues'] == issues.data.length || roleContent['max-opened-prs'] == userPullRequestCount) {
           toReturn.push(true)
         } else {
           toReturn.push(false)
         }
-      }
     })
   )
   } catch (error) {
