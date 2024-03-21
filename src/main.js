@@ -61,26 +61,26 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core = __importStar(require("@actions/core"));
 var github = __importStar(require("@actions/github"));
-var handleIssueComment_1 = require("./issueComment/handleIssueComment");
-var handlePullReq_1 = require("./pullReq/handlePullReq");
+var assign_1 = require("./issueComment/assign");
+// import {handlePullReq} from './pullReq/handlePullReq'
 function run() {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             try {
                 switch (github.context.eventName) {
                     case 'issue_comment':
-                        (0, handleIssueComment_1.handleIssueComment)();
+                        (0, assign_1.assign)();
                         break;
-                    case 'pull_request':
-                        (0, handlePullReq_1.handlePullReq)();
-                        break;
+                    // case 'pull_request':
+                    //   handlePullReq()
+                    //   break
                     default:
                         core.error("".concat(github.context.eventName, " not yet supported"));
                         break;
                 }
             }
             catch (error) {
-                core.setFailed(error.message);
+                core.setFailed(String(error));
             }
             return [2 /*return*/];
         });

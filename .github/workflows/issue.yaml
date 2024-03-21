@@ -15,4 +15,4 @@ jobs:
           prow-commands: '/assign 
             /unassign'
           github-token: "${{ secrets.GITHUB_TOKEN }}"
-          configuration-path: .github/config.yaml
+          # configuration-path: .github/config.yaml
