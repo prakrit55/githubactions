@@ -36,6 +36,7 @@ export const assign = async (
   console.log(commentArgs, "1")
 
   try {
+  await Promise.all(
     commentArgs.map(async arg => {
       console.log(arg, "arg")
       const roleContents: any = getRoleOfUser(octokit, context, arg)
@@ -61,6 +62,7 @@ export const assign = async (
         }
       }
     })
+  )
   } catch (error) {
     throw new Error(`could not assign: ${error}`)
     }

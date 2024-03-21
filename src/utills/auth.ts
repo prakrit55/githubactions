@@ -5,6 +5,35 @@ import {Context} from '@actions/github/lib/context'
 import * as fs from 'fs';
 
 import yaml from 'js-yaml'
+import { promiseHooks } from 'v8';
+
+
+const userReturnRole = (
+  maintanersFile: string,
+  role: string,
+): string => {
+  const ruleData = yaml.load(maintanersFile) as any
+  const fit = ruleData[role]
+  return fit
+}
+
+const userPresentInMaintainers =  (
+  maintainersFile: string,
+  role: string,
+  username: string,
+): boolean => {
+
+  core.debug(`checking if ${username} is in the ${role} in the OWNERS file`)
+  const ownersData = yaml.load(maintainersFile) as any
+
+  const roleMembers = ownersData[role]
+  if ((roleMembers as string[]) !== undefined) {
+    return roleMembers.indexOf(username) > -1
+  }
+
+  core.info(`${username} is not in the ${role} role in the OWNERS file`)
+  return false
+}
 
 
 
@@ -49,13 +78,26 @@ export const getRoleOfUser = async (
   octokit: github.GitHub,
   context: Context,
   arg: string,
-): Promise<string> => {
+): Promise<string> => { 
+
   let roleContents, rulesForRole = ""
-  try{
+
+
+  try{ 
         roleContents = await getContentsFromMaintainersFile(octokit, context, 'maintainers.yaml')
+        console.log(roleContents, "1")
+  }catch (e) {
+    throw new Error(`could not get authorized user: ${e}`)
+  }
+
+
+  try{ 
         rulesForRole = await getContentsFromMaintainersFile(octokit, context, '.github/config.yaml')
         console.log(roleContents, "1")
-        if ( roleContents != "") {
+  }catch (e) {
+    throw new Error(`could not get authorized user: ${e}`)
+  }
+
         let ifCommenterIsAdmin = userPresentInMaintainers(roleContents, "admin", arg)
           console.log(ifCommenterIsAdmin, "2")
         const ifCommenterIsMaintainer = userPresentInMaintainers(roleContents, "maintainer", arg)
@@ -82,44 +124,9 @@ export const getRoleOfUser = async (
             console.log("default")
             return fordefault
         }
-      }
-  }catch (e) {
-    throw new Error(`could not get authorized user: ${e}`)
-  }
+
   return "not found"
 }
-
-const userReturnRole = (
-  maintanersFile: string,
-  role: string,
-): string => {
-  const ruleData = yaml.load(maintanersFile) as any
-  const fit = ruleData[role]
-  return fit
-}
-
-const userPresentInMaintainers =  (
-  maintainersFile: string,
-  role: string,
-  username: string,
-): boolean => {
-
-  core.debug(`checking if ${username} is in the ${role} in the OWNERS file`)
-  const ownersData = yaml.load(maintainersFile) as any
-
-  const roleMembers = ownersData[role]
-  if ((roleMembers as string[]) !== undefined) {
-    return roleMembers.indexOf(username) > -1
-  }
-
-  core.info(`${username} is not in the ${role} role in the OWNERS file`)
-  return false
-}
-
-
-
-
-
 /**
  * checkOrgMember will check to see if the given user is a repo org member
  *
@@ -386,23 +393,5 @@ function isInOwnersFile(
   if ((roleMembers as string[]) !== undefined) {
     return roleMembers.indexOf(username) > -1
   }
-
-  let yamlString = `
-  admin:
-    name: John 
-    age: 30
-    city: New York`
-;
-let obj = yaml.load(yamlString) as any;
-
-console.log(obj)
-
-  core.info(`${username} is not in the ${role} role in the OWNERS file`)
   return false
-}
-
-const pic = [{"issue": 7,}, {"assign": true}, {"pin": 5} ]
-const lo = {"issue": 7, "assign": true, "pin": 5 }
-if (lo.assign == false) {
-
 }
