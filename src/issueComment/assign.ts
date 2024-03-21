@@ -38,6 +38,7 @@ export const assign = async (
   try {
     commentArgs.map(async arg => {
       const roleContents: any = getRoleOfUser(octokit, context, arg)
+      console.log(roleContents, "2")
 
       const issueps = await octokit.pulls.list({
         owner: "Keptn",
