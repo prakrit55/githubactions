@@ -59,15 +59,15 @@ export const assign = async (
       console.log(roleContent, "2")
 
       const issueps = await octokit.pulls.list({
-        owner: "Keptn",
-        repo: "keptn/lifecycle-toolkit",
+        owner: "prakrit55",
+        repo: "githubactions",
         state: "open",
       })
       const userPullRequestCount = issueps.data.filter(pr => pr.user.login == arg).length
 
       const issues = await octokit.issues.listForRepo ({
-        owner: "Keptn",
-        repo: "keptn/lifecycle-toolkit",
+        owner: "prakrit55",
+        repo: "githubactions",
         assignee: arg,
       })
       for (const key in roleContent) {
