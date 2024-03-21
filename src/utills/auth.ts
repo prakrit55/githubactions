@@ -59,6 +59,7 @@ export const getRoleOfUser = async (
         const ifCommenterIsDeveloper = await userPresentInMaintainers(roleContents, "developer", arg)
           console.log(ifCommenterIsDeveloper, "4")
         const rulesForRole = await getContentsFromMaintainersFile(octokit, context, "../.github/config.yaml")
+        console.log(rulesForRole)
 
         switch (true) {
           case ifCommenterIsAdmin:

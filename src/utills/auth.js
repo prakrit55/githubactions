@@ -97,7 +97,7 @@ var getContentsFromMaintainersFile = function (octokit, context, filepath) { ret
                 if (e_1 instanceof request_error_1.RequestError) {
                     if (e_1.status === 404) {
                         core.debug('No OWNERS file found');
-                        return [2 /*return*/, ""];
+                        return [2 /*return*/, "couldnot find "];
                     }
                 }
                 throw new Error("error checking for an OWNERS file at the root of the repository: ".concat(e_1));
@@ -118,7 +118,7 @@ var getRoleOfUser = function (octokit, context, arg) { return __awaiter(void 0, 
         switch (_b.label) {
             case 0:
                 _b.trys.push([0, 15, , 16]);
-                return [4 /*yield*/, getContentsFromMaintainersFile(octokit, context, "./.github/maintainers.yaml")];
+                return [4 /*yield*/, getContentsFromMaintainersFile(octokit, context, "../.github/maintainers.yaml")];
             case 1:
                 roleContents = _b.sent();
                 console.log(roleContents, "1");
@@ -134,9 +134,10 @@ var getRoleOfUser = function (octokit, context, arg) { return __awaiter(void 0, 
             case 4:
                 ifCommenterIsDeveloper = _b.sent();
                 console.log(ifCommenterIsDeveloper, "4");
-                return [4 /*yield*/, getContentsFromMaintainersFile(octokit, context, "./.github/config.yaml")];
+                return [4 /*yield*/, getContentsFromMaintainersFile(octokit, context, "../.github/config.yaml")];
             case 5:
                 rulesForRole = _b.sent();
+                console.log(rulesForRole);
                 _a = true;
                 switch (_a) {
                     case ifCommenterIsAdmin: return [3 /*break*/, 6];
