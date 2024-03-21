@@ -14,6 +14,7 @@ const getContentsFromMaintainersFile = async (
   filepath: string
 ): Promise<string> => {
   let data: any = undefined
+  console.log(filepath)
   try {
     const response = await octokit.repos.getContents({
       ...context.repo,
