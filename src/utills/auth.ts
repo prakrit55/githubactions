@@ -51,7 +51,7 @@ export const getRoleOfUser = async (
   arg: string,
 ): Promise<string> => {
   try{
-        const roleContents = await getContentsFromMaintainersFile(octokit, context, ".github/maintainers.yaml")
+        const roleContents = await getContentsFromMaintainersFile(octokit, context, '.github/maintainers.yaml')
         console.log(roleContents, "1")
         const ifCommenterIsAdmin = await userPresentInMaintainers(roleContents, "admin", arg)
                 console.log(ifCommenterIsAdmin, "2")
@@ -59,7 +59,7 @@ export const getRoleOfUser = async (
           console.log(ifCommenterIsMaintainer, "3")
         const ifCommenterIsDeveloper = await userPresentInMaintainers(roleContents, "developer", arg)
           console.log(ifCommenterIsDeveloper, "4")
-        const rulesForRole = await getContentsFromMaintainersFile(octokit, context, "../.github/config.yaml")
+        const rulesForRole = await getContentsFromMaintainersFile(octokit, context, '.github/config.yaml')
         console.log(rulesForRole)
 
         switch (true) {
