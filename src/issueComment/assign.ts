@@ -127,12 +127,21 @@ for (const comm of toReturn) {
 
     default:
       try {
-            let namme = await octokit.issues.addAssignees({
-              ...context.repo,
+            // let namme = await octokit.issues.addAssignees({
+            //   ...context.repo,
+            //   issue_number: issueNumber,
+            //   assignees: commentApgs
+            // })
+            // console.log('Assignees added:', namme.data);
+            await octokit.request(`POST /githubactions/{prakrit55}/{githubactions}/issues/{${issueNumber}}}/assignees`, {
+              owner: 'prakrit55',
+              repo: 'githubactions',
               issue_number: issueNumber,
-              assignees: commentApgs
+              assignees: commentApgs,
+              headers: {
+                'X-GitHub-Api-Version': '2022-11-28'
+              }
             })
-            console.log('Assignees added:', namme.data);
       } catch (e) {
         console.error('Error adding assignees:', e);
         throw new Error(`could not add assignees: ${e}`)
