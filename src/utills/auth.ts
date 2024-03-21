@@ -22,7 +22,7 @@ const getContentsFromMaintainersFile = async (
     })
 
     data = response.data
-    console.log(data)
+    console.log(data, response)
   } catch (e) {
     if (e instanceof RequestError) {
       if (e.status === 404) {
@@ -51,7 +51,7 @@ export const getRoleOfUser = async (
   arg: string,
 ): Promise<string> => {
   try{
-        const roleContents = await getContentsFromMaintainersFile(octokit, context, "../.github/maintainers.yaml")
+        const roleContents = await getContentsFromMaintainersFile(octokit, context, ".github/maintainers.yaml")
         console.log(roleContents, "1")
         const ifCommenterIsAdmin = await userPresentInMaintainers(roleContents, "admin", arg)
                 console.log(ifCommenterIsAdmin, "2")
