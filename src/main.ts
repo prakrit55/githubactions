@@ -4,16 +4,12 @@ import {assign} from './issueComment/assign'
 // import {handlePullReq} from './pullReq/handlePullReq'
 
 
-async function run(): Promise<void> {
+export async function run(): Promise<void> {
     try {
       switch (github.context.eventName) {
         case 'issue_comment':
           assign()
           break
-  
-        // case 'pull_request':
-        //   handlePullReq()
-        //   break
   
         default:
           core.error(`${github.context.eventName} not yet supported`)

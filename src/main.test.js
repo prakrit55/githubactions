@@ -59,30 +59,70 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.run = void 0;
+// Import necessary modules and functions for testing
 var core = __importStar(require("@actions/core"));
 var github = __importStar(require("@actions/github"));
 var assign_1 = require("./issueComment/assign");
-// import {handlePullReq} from './pullReq/handlePullReq'
-function run() {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            try {
-                switch (github.context.eventName) {
-                    case 'issue_comment':
-                        (0, assign_1.assign)();
-                        break;
-                    default:
-                        core.error("".concat(github.context.eventName, " not yet supported"));
-                        break;
-                }
-            }
-            catch (error) {
-                core.setFailed(String(error));
-            }
-            return [2 /*return*/];
-        });
+var main_1 = require("./main");
+// Mock the core module
+jest.mock('@actions/core');
+// Mock the github module and its context
+jest.mock('@actions/github', function () { return ({
+    context: {
+        eventName: 'issue_comment'
+    }
+}); });
+// Mock the assign function
+jest.mock('./issueComment/assign', function () { return ({
+    assign: jest.fn()
+}); });
+describe('Your script test suite', function () {
+    afterEach(function () {
+        jest.resetAllMocks();
     });
-}
-exports.run = run;
-run();
+    it('should call assign function for issue_comment event', function () { return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, (0, main_1.run)()];
+                case 1:
+                    _a.sent();
+                    expect(assign_1.assign).toHaveBeenCalled();
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it('should log error for unsupported event', function () { return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    // Change the event name to something unsupported
+                    jest.spyOn(github.context, 'eventName', 'get').mockReturnValueOnce('unsupported_event');
+                    return [4 /*yield*/, (0, main_1.run)()];
+                case 1:
+                    _a.sent();
+                    expect(core.error).toHaveBeenCalledWith('unsupported_event not yet supported');
+                    expect(core.setFailed).toHaveBeenCalledWith('unsupported_event not yet supported');
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it('should handle errors gracefully', function () { return __awaiter(void 0, void 0, void 0, function () {
+        var errorMessage, error;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    errorMessage = 'An error occurred';
+                    error = new Error(errorMessage);
+                    // Mocking the assign function to throw an error
+                    assign_1.assign.mockImplementation(function () {
+                        throw error;
+                    });
+                    return [4 /*yield*/, (0, main_1.run)()];
+                case 1:
+                    _a.sent();
+                    expect(core.setFailed).toHaveBeenCalledWith(errorMessage);
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+});
