@@ -58,6 +58,8 @@ export const assign = async (
       state: "open",
     })
     console.log(issueps, "prs")
+    console.log(issueps.data.filter.length)
+    console.log(issueps.data.length)
   } catch (e){
     throw new Error("no prs")
   }
@@ -83,8 +85,9 @@ export const assign = async (
         repo: "githubactions",
         state: "open",
       })
-      if (issueps.data.length == 0) {
+      if (issueps.data.filter.length == 0) {
         userPullRequestCount= 0
+        console.log(issueps.data.filter.length)
       } else {
         userPullRequestCount = issueps.data.filter(pr => pr.user.login == arg).length
       }
