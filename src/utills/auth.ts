@@ -22,7 +22,7 @@ const getContentsFromMaintainersFile = async (
     })
 
     data = response.data
-    console.log(data, response)
+    console.log(data, response, "no response")
   } catch (e) {
     if (e instanceof RequestError) {
       if (e.status === 404) {
