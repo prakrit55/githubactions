@@ -84,7 +84,7 @@ var auth_1 = require("../utills/auth");
 var assign = function (context) {
     if (context === void 0) { context = github.context; }
     return __awaiter(void 0, void 0, void 0, function () {
-        var toReturn, commentApgs, token, octokit, issueNumber, commenterId, commentBody, commentArgs, i, _i, toReturn_1, comm, _a, e_1;
+        var toReturn, commentApgs, token, octokit, issueNumber, commenterId, commentBody, roleContents, rulesForRole, commentArgs, e_1, e_2, issueps, e_3, issues, error_1, i, _i, toReturn_1, comm, _a, e_4;
         var _b;
         return __generator(this, function (_c) {
             switch (_c.label) {
@@ -97,50 +97,108 @@ var assign = function (context) {
                     issueNumber = (_b = context.payload.issue) === null || _b === void 0 ? void 0 : _b.number;
                     commenterId = context.payload['comment']['user']['login'];
                     commentBody = context.payload['comment']['body'];
+                    rulesForRole = "";
                     if (issueNumber === undefined) {
                         throw new Error("github context payload missing issue number: ".concat(context.payload));
                     }
                     commentArgs = (0, command_1.getCommandArgs)('/assign', commentBody, commenterId);
                     console.log(commentArgs, "1");
-                    try {
-                        commentArgs.map(function (arg) { return __awaiter(void 0, void 0, void 0, function () {
-                            var roleContents, issueps, userPullRequestCount, issues, key;
+                    _c.label = 1;
+                case 1:
+                    _c.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, (0, auth_1.getContentsFromMaintainersFile)(octokit, context, 'maintainers.yaml')];
+                case 2:
+                    roleContents = _c.sent();
+                    console.log(roleContents, "12");
+                    return [3 /*break*/, 4];
+                case 3:
+                    e_1 = _c.sent();
+                    throw new Error("could not get authorized user: ".concat(e_1));
+                case 4:
+                    _c.trys.push([4, 6, , 7]);
+                    return [4 /*yield*/, (0, auth_1.getContentsFromMaintainersFile)(octokit, context, '.github/config.yaml')];
+                case 5:
+                    rulesForRole = _c.sent();
+                    console.log(roleContents, "1");
+                    return [3 /*break*/, 7];
+                case 6:
+                    e_2 = _c.sent();
+                    throw new Error("could not get authorized user: ".concat(e_2));
+                case 7:
+                    _c.trys.push([7, 9, , 10]);
+                    return [4 /*yield*/, octokit.pulls.list({
+                            owner: "prakrit55",
+                            repo: "githubactions",
+                            state: "open",
+                        })];
+                case 8:
+                    issueps = _c.sent();
+                    console.log(issueps, "prs");
+                    console.log(issueps.data.filter.length);
+                    console.log(issueps.data.length);
+                    return [3 /*break*/, 10];
+                case 9:
+                    e_3 = _c.sent();
+                    throw new Error("no prs");
+                case 10: return [4 /*yield*/, octokit.issues.listForRepo({
+                        owner: "prakrit55",
+                        repo: "githubactions",
+                        assignee: "prakrit55",
+                    })];
+                case 11:
+                    issues = _c.sent();
+                    console.log(issues.data.length);
+                    _c.label = 12;
+                case 12:
+                    _c.trys.push([12, 14, , 15]);
+                    return [4 /*yield*/, Promise.all(commentArgs.map(function (arg) { return __awaiter(void 0, void 0, void 0, function () {
+                            var userPullRequestCount, roleContent, issueps, issues;
                             return __generator(this, function (_a) {
                                 switch (_a.label) {
                                     case 0:
-                                        roleContents = (0, auth_1.getRoleOfUser)(octokit, context, arg);
-                                        console.log(roleContents, "2");
+                                        console.log(arg, "arg");
+                                        userPullRequestCount = 0;
+                                        roleContent = (0, auth_1.getRoleOfUser)(arg, roleContents, rulesForRole);
+                                        console.log(roleContent, "2");
                                         return [4 /*yield*/, octokit.pulls.list({
-                                                owner: "Keptn",
-                                                repo: "keptn/lifecycle-toolkit",
+                                                owner: "prakrit55",
+                                                repo: "githubactions",
                                                 state: "open",
                                             })];
                                     case 1:
                                         issueps = _a.sent();
-                                        userPullRequestCount = issueps.data.filter(function (pr) { return pr.user.login == arg; }).length;
+                                        if (issueps.data.length == 0) {
+                                            userPullRequestCount = 0;
+                                            console.log(issueps.data.filter.length);
+                                        }
+                                        else {
+                                            userPullRequestCount = issueps.data.filter(function (pr) { return pr.user.login == arg; }).length;
+                                        }
                                         return [4 /*yield*/, octokit.issues.listForRepo({
-                                                owner: "Keptn",
-                                                repo: "keptn/lifecycle-toolkit",
+                                                owner: "prakrit55",
+                                                repo: "githubactions",
                                                 assignee: arg,
                                             })];
                                     case 2:
                                         issues = _a.sent();
-                                        for (key in roleContents) {
-                                            if (roleContents[key]['max-assigned-issues'] == issues.data.length || roleContents[key]['max-opened-prs'] == userPullRequestCount) {
-                                                toReturn.push(true);
-                                            }
-                                            else {
-                                                toReturn.push(false);
-                                            }
+                                        console.log(issues.data.length);
+                                        if (roleContent['max-assigned-issues'] == issues.data.length || roleContent['max-opened-prs'] == userPullRequestCount) {
+                                            toReturn.push(true);
+                                        }
+                                        else {
+                                            toReturn.push(false);
                                         }
                                         return [2 /*return*/];
                                 }
                             });
-                        }); });
-                    }
-                    catch (error) {
-                        throw new Error("could not assign: ".concat(error));
-                    }
+                        }); }))];
+                case 13:
+                    _c.sent();
+                    return [3 /*break*/, 15];
+                case 14:
+                    error_1 = _c.sent();
+                    throw new Error("could not assign: ".concat(error_1));
+                case 15:
                     i = 0;
                     for (_i = 0, toReturn_1 = toReturn; _i < toReturn_1.length; _i++) {
                         comm = toReturn_1[_i];
@@ -152,21 +210,42 @@ var assign = function (context) {
                     }
                     _a = commentApgs.length;
                     switch (_a) {
-                        case 0: return [3 /*break*/, 1];
+                        case 0: return [3 /*break*/, 16];
                     }
-                    return [3 /*break*/, 2];
-                case 1: throw new Error("no users found. Only users who are members of the org, are collaborators, or have previously commented on this issue may be assigned");
-                case 2:
-                    _c.trys.push([2, 4, , 5]);
-                    return [4 /*yield*/, octokit.issues.addAssignees(__assign(__assign({}, context.repo), { issue_number: issueNumber, assignees: commentApgs }))];
-                case 3:
+                    return [3 /*break*/, 17];
+                case 16: throw new Error("no users found. Only users who are members of the org, are collaborators, or have previously commented on this issue may be assigned");
+                case 17:
+                    _c.trys.push([17, 19, , 20]);
+                    // let namme = await octokit.issues.addAssignees({
+                    //   ...context.repo,
+                    //   issue_number: issueNumber,
+                    //   assignees: commentApgs
+                    // })
+                    // console.log('Assignees added:', namme.data);
+                    return [4 /*yield*/, octokit.request("POST /githubactions/{prakrit55}/{githubactions}/issues/{".concat(issueNumber, "}}/assignees"), {
+                            owner: 'prakrit55',
+                            repo: 'githubactions',
+                            issue_number: issueNumber,
+                            assignees: commentApgs,
+                            headers: {
+                                'X-GitHub-Api-Version': '2022-11-28'
+                            }
+                        })];
+                case 18:
+                    // let namme = await octokit.issues.addAssignees({
+                    //   ...context.repo,
+                    //   issue_number: issueNumber,
+                    //   assignees: commentApgs
+                    // })
+                    // console.log('Assignees added:', namme.data);
                     _c.sent();
-                    return [3 /*break*/, 5];
-                case 4:
-                    e_1 = _c.sent();
-                    throw new Error("could not add assignees: ".concat(e_1));
-                case 5: return [3 /*break*/, 6];
-                case 6: return [2 /*return*/];
+                    return [3 /*break*/, 20];
+                case 19:
+                    e_4 = _c.sent();
+                    console.error('Error adding assignees:', e_4);
+                    throw new Error("could not add assignees: ".concat(e_4));
+                case 20: return [3 /*break*/, 21];
+                case 21: return [2 /*return*/];
             }
         });
     });

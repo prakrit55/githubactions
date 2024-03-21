@@ -73,16 +73,32 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.assertAuthorizedByOwnersOrMembership = exports.checkCommenterAuth = exports.getOrgCollabCommentUsers = exports.checkIssueComments = exports.checkCollaborator = exports.checkAdmin = exports.getRoleOfUser = void 0;
+exports.assertAuthorizedByOwnersOrMembership = exports.checkCommenterAuth = exports.getOrgCollabCommentUsers = exports.checkIssueComments = exports.checkCollaborator = exports.checkAdmin = exports.getRoleOfUser = exports.getContentsFromMaintainersFile = void 0;
 var core = __importStar(require("@actions/core"));
 var request_error_1 = require("@octokit/request-error");
 var js_yaml_1 = __importDefault(require("js-yaml"));
+var userReturnRole = function (maintanersFile, role) {
+    var ruleData = js_yaml_1.default.load(maintanersFile);
+    var fit = ruleData[role];
+    return fit;
+};
+var userPresentInMaintainers = function (maintainersFile, role, username) {
+    core.debug("checking if ".concat(username, " is in the ").concat(role, " in the OWNERS file"));
+    var ownersData = js_yaml_1.default.load(maintainersFile);
+    var roleMembers = ownersData[role];
+    if (roleMembers !== undefined) {
+        return roleMembers.indexOf(username) > -1;
+    }
+    core.info("".concat(username, " is not in the ").concat(role, " role in the OWNERS file"));
+    return false;
+};
 var getContentsFromMaintainersFile = function (octokit, context, filepath) { return __awaiter(void 0, void 0, void 0, function () {
     var data, response, e_1, decoded;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 data = undefined;
+                console.log(filepath);
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 3, , 4]);
@@ -90,14 +106,14 @@ var getContentsFromMaintainersFile = function (octokit, context, filepath) { ret
             case 2:
                 response = _a.sent();
                 data = response.data;
-                console.log(data);
+                console.log(data, response, "no response");
                 return [3 /*break*/, 4];
             case 3:
                 e_1 = _a.sent();
                 if (e_1 instanceof request_error_1.RequestError) {
                     if (e_1.status === 404) {
                         core.debug('No OWNERS file found');
-                        return [2 /*return*/, "couldnot find "];
+                        return [2 /*return*/, "couldnot found "];
                     }
                 }
                 throw new Error("error checking for an OWNERS file at the root of the repository: ".concat(e_1));
@@ -112,89 +128,42 @@ var getContentsFromMaintainersFile = function (octokit, context, filepath) { ret
         }
     });
 }); };
-var getRoleOfUser = function (octokit, context, arg) { return __awaiter(void 0, void 0, void 0, function () {
-    var roleContents, ifCommenterIsAdmin, ifCommenterIsMaintainer, ifCommenterIsDeveloper, rulesForRole, _a, admin, maintainer, developer, fordefault, e_2;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
-            case 0:
-                _b.trys.push([0, 15, , 16]);
-                return [4 /*yield*/, getContentsFromMaintainersFile(octokit, context, "../.github/maintainers.yaml")];
-            case 1:
-                roleContents = _b.sent();
-                console.log(roleContents, "1");
-                return [4 /*yield*/, userPresentInMaintainers(roleContents, "admin", arg)];
-            case 2:
-                ifCommenterIsAdmin = _b.sent();
-                console.log(ifCommenterIsAdmin, "2");
-                return [4 /*yield*/, userPresentInMaintainers(roleContents, "maintainer", arg)];
-            case 3:
-                ifCommenterIsMaintainer = _b.sent();
-                console.log(ifCommenterIsMaintainer, "3");
-                return [4 /*yield*/, userPresentInMaintainers(roleContents, "developer", arg)];
-            case 4:
-                ifCommenterIsDeveloper = _b.sent();
-                console.log(ifCommenterIsDeveloper, "4");
-                return [4 /*yield*/, getContentsFromMaintainersFile(octokit, context, "../.github/config.yaml")];
-            case 5:
-                rulesForRole = _b.sent();
-                console.log(rulesForRole);
-                _a = true;
-                switch (_a) {
-                    case ifCommenterIsAdmin: return [3 /*break*/, 6];
-                    case ifCommenterIsMaintainer: return [3 /*break*/, 8];
-                    case ifCommenterIsDeveloper: return [3 /*break*/, 10];
-                }
-                return [3 /*break*/, 12];
-            case 6: return [4 /*yield*/, userReturnRole(rulesForRole, "admin")];
-            case 7:
-                admin = _b.sent();
+exports.getContentsFromMaintainersFile = getContentsFromMaintainersFile;
+var getRoleOfUser = function (
+// octokit: github.GitHub,
+// context: Context,
+arg, roleContents, rulesForRole) { return __awaiter(void 0, void 0, void 0, function () {
+    var ifCommenterIsAdmin, ifCommenterIsMaintainer, ifCommenterIsDeveloper, admin, maintainer, developer, fordefault;
+    return __generator(this, function (_a) {
+        ifCommenterIsAdmin = userPresentInMaintainers(roleContents, "admin", arg);
+        console.log(ifCommenterIsAdmin, "2");
+        ifCommenterIsMaintainer = userPresentInMaintainers(roleContents, "maintainer", arg);
+        console.log(ifCommenterIsMaintainer, "3");
+        ifCommenterIsDeveloper = userPresentInMaintainers(roleContents, "developer", arg);
+        console.log(ifCommenterIsDeveloper, "4");
+        console.log(rulesForRole);
+        switch (true) {
+            case ifCommenterIsAdmin:
+                admin = userReturnRole(rulesForRole, "admin");
                 console.log(ifCommenterIsAdmin, "admin");
                 return [2 /*return*/, admin];
-            case 8: return [4 /*yield*/, userReturnRole(rulesForRole, "maintainer")];
-            case 9:
-                maintainer = _b.sent();
+            case ifCommenterIsMaintainer:
+                maintainer = userReturnRole(rulesForRole, "maintainer");
                 console.log(ifCommenterIsMaintainer, "mantainer");
                 return [2 /*return*/, maintainer];
-            case 10: return [4 /*yield*/, userReturnRole(rulesForRole, "developer")];
-            case 11:
-                developer = _b.sent();
+            case ifCommenterIsDeveloper:
+                developer = userReturnRole(rulesForRole, "developer");
                 console.log(ifCommenterIsDeveloper, "developer");
                 return [2 /*return*/, developer];
-            case 12: return [4 /*yield*/, userReturnRole(rulesForRole, "default")];
-            case 13:
-                fordefault = _b.sent();
+            default:
+                fordefault = userReturnRole(rulesForRole, "default");
                 console.log("default");
                 return [2 /*return*/, fordefault];
-            case 14: return [3 /*break*/, 16];
-            case 15:
-                e_2 = _b.sent();
-                throw new Error("could not get authorized user: ".concat(e_2));
-            case 16: return [2 /*return*/, ""];
         }
+        return [2 /*return*/];
     });
 }); };
 exports.getRoleOfUser = getRoleOfUser;
-var userReturnRole = function (maintanersFile, role) { return __awaiter(void 0, void 0, void 0, function () {
-    var ruleData, fit;
-    return __generator(this, function (_a) {
-        ruleData = js_yaml_1.default.load(maintanersFile);
-        fit = ruleData[role];
-        return [2 /*return*/, fit];
-    });
-}); };
-var userPresentInMaintainers = function (maintainersFile, role, username) { return __awaiter(void 0, void 0, void 0, function () {
-    var ownersData, roleMembers;
-    return __generator(this, function (_a) {
-        core.debug("checking if ".concat(username, " is in the ").concat(role, " in the OWNERS file"));
-        ownersData = js_yaml_1.default.load(maintainersFile);
-        roleMembers = ownersData[role];
-        if (roleMembers !== undefined) {
-            return [2 /*return*/, roleMembers.indexOf(username) > -1];
-        }
-        core.info("".concat(username, " is not in the ").concat(role, " role in the OWNERS file"));
-        return [2 /*return*/, false];
-    });
-}); };
 /**
  * checkOrgMember will check to see if the given user is a repo org member
  *
@@ -203,7 +172,7 @@ var userPresentInMaintainers = function (maintainersFile, role, username) { retu
  * @param user - the users to check auth on
  */
 var checkAdmin = function (octokit, context, user) { return __awaiter(void 0, void 0, void 0, function () {
-    var e_3;
+    var e_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -220,7 +189,7 @@ var checkAdmin = function (octokit, context, user) { return __awaiter(void 0, vo
                 _a.sent();
                 return [2 /*return*/, true];
             case 2:
-                e_3 = _a.sent();
+                e_2 = _a.sent();
                 return [2 /*return*/, false];
             case 3: return [2 /*return*/];
         }
@@ -235,7 +204,7 @@ exports.checkAdmin = checkAdmin;
  * @param user - the users to check auth on
  */
 var checkCollaborator = function (octokit, context, user) { return __awaiter(void 0, void 0, void 0, function () {
-    var e_4;
+    var e_3;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -245,7 +214,7 @@ var checkCollaborator = function (octokit, context, user) { return __awaiter(voi
                 _a.sent();
                 return [2 /*return*/, true];
             case 2:
-                e_4 = _a.sent();
+                e_3 = _a.sent();
                 return [2 /*return*/, false];
             case 3: return [2 /*return*/];
         }
@@ -262,7 +231,7 @@ exports.checkCollaborator = checkCollaborator;
  * @param user - the users to check auth on
  */
 var checkIssueComments = function (octokit, context, issueNum, user) { return __awaiter(void 0, void 0, void 0, function () {
-    var comments, _i, _a, e, e_5;
+    var comments, _i, _a, e, e_4;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
@@ -278,7 +247,7 @@ var checkIssueComments = function (octokit, context, issueNum, user) { return __
                 }
                 return [2 /*return*/, false];
             case 2:
-                e_5 = _b.sent();
+                e_4 = _b.sent();
                 return [2 /*return*/, false];
             case 3: return [2 /*return*/];
         }
@@ -295,7 +264,7 @@ exports.checkIssueComments = checkIssueComments;
  * @param args - the users to check auth on
  */
 var getOrgCollabCommentUsers = function (octokit, context, issueNum, args) { return __awaiter(void 0, void 0, void 0, function () {
-    var toReturn, e_6;
+    var toReturn, e_5;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -327,8 +296,8 @@ var getOrgCollabCommentUsers = function (octokit, context, issueNum, args) { ret
                 _a.sent();
                 return [3 /*break*/, 4];
             case 3:
-                e_6 = _a.sent();
-                throw new Error("could not get authorized user: ".concat(e_6));
+                e_5 = _a.sent();
+                throw new Error("could not get authorized user: ".concat(e_5));
             case 4: return [2 /*return*/, toReturn];
         }
     });
@@ -344,7 +313,7 @@ exports.getOrgCollabCommentUsers = getOrgCollabCommentUsers;
  * @param args - the users to check auth on
  */
 var checkCommenterAuth = function (octokit, context, issueNum, user) { return __awaiter(void 0, void 0, void 0, function () {
-    var isOrgMember, isCollaborator, hasCommented, e_7, e_8, e_9;
+    var isOrgMember, isCollaborator, hasCommented, e_6, e_7, e_8;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -359,8 +328,8 @@ var checkCommenterAuth = function (octokit, context, issueNum, user) { return __
                 isOrgMember = _a.sent();
                 return [3 /*break*/, 4];
             case 3:
-                e_7 = _a.sent();
-                throw new Error("error in checking org member: ".concat(e_7));
+                e_6 = _a.sent();
+                throw new Error("error in checking org member: ".concat(e_6));
             case 4:
                 _a.trys.push([4, 6, , 7]);
                 return [4 /*yield*/, (0, exports.checkCollaborator)(octokit, context, user)];
@@ -368,8 +337,8 @@ var checkCommenterAuth = function (octokit, context, issueNum, user) { return __
                 isCollaborator = _a.sent();
                 return [3 /*break*/, 7];
             case 6:
-                e_8 = _a.sent();
-                throw new Error("could not check collaborator: ".concat(e_8));
+                e_7 = _a.sent();
+                throw new Error("could not check collaborator: ".concat(e_7));
             case 7:
                 _a.trys.push([7, 9, , 10]);
                 return [4 /*yield*/, (0, exports.checkIssueComments)(octokit, context, issueNum, user)];
@@ -377,8 +346,8 @@ var checkCommenterAuth = function (octokit, context, issueNum, user) { return __
                 hasCommented = _a.sent();
                 return [3 /*break*/, 10];
             case 9:
-                e_9 = _a.sent();
-                throw new Error("could not check issue comments: ".concat(e_9));
+                e_8 = _a.sent();
+                throw new Error("could not check issue comments: ".concat(e_8));
             case 10:
                 if (isOrgMember || isCollaborator || hasCommented) {
                     return [2 /*return*/, true];
@@ -429,7 +398,7 @@ exports.assertAuthorizedByOwnersOrMembership = assertAuthorizedByOwnersOrMembers
  */
 function retrieveOwnersFile(octokit, context) {
     return __awaiter(this, void 0, void 0, function () {
-        var data, response, makee, e_10, decoded;
+        var data, response, makee, e_9, decoded;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -451,14 +420,14 @@ function retrieveOwnersFile(octokit, context) {
                     makee = _a.sent();
                     return [3 /*break*/, 5];
                 case 4:
-                    e_10 = _a.sent();
-                    if (e_10 instanceof request_error_1.RequestError) {
-                        if (e_10.status === 404) {
+                    e_9 = _a.sent();
+                    if (e_9 instanceof request_error_1.RequestError) {
+                        if (e_9.status === 404) {
                             core.debug('No OWNERS file found');
                             return [2 /*return*/, ''];
                         }
                     }
-                    throw new Error("error checking for an OWNERS file at the root of the repository: ".concat(e_10));
+                    throw new Error("error checking for an OWNERS file at the root of the repository: ".concat(e_9));
                 case 5:
                     if (!data.content || !data.encoding) {
                         throw new Error("invalid OWNERS file returned from GitHub API: ".concat(data));
@@ -483,13 +452,5 @@ function isInOwnersFile(ownersContents, role, username) {
     if (roleMembers !== undefined) {
         return roleMembers.indexOf(username) > -1;
     }
-    var yamlString = "\n  admin:\n    name: John \n    age: 30\n    city: New York";
-    var obj = js_yaml_1.default.load(yamlString);
-    console.log(obj);
-    core.info("".concat(username, " is not in the ").concat(role, " role in the OWNERS file"));
     return false;
-}
-var pic = [{ "issue": 7, }, { "assign": true }, { "pin": 5 }];
-var lo = { "issue": 7, "assign": true, "pin": 5 };
-if (lo.assign == false) {
 }

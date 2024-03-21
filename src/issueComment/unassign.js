@@ -95,7 +95,7 @@ var unassign = function (context) {
                     }
                     commentArgs = (0, command_1.getCommandArgs)('/unassign', commentBody, commenterId);
                     try {
-                        roleContents = (0, auth_1.getRoleOfUser)(octokit, context, commenterId);
+                        roleContents = (0, auth_1.getRoleOfUser)(commenterId, "", "");
                         for (key in roleContents) {
                             if (roleContents[key]['unassign-others'] == true) {
                                 isAuthUser = true;
