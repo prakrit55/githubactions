@@ -75,26 +75,28 @@ export const getContentsFromMaintainersFile = async (
 }
 
 export const getRoleOfUser = async (
-  octokit: github.GitHub,
-  context: Context,
+  // octokit: github.GitHub,
+  // context: Context,
   arg: string,
+  roleContents: any,
+  rulesForRole: any,
 ): Promise<string> => { 
-  let roleContents, rulesForRole = ""
+  // let roleContents, rulesForRole = ""
 
-    try{ 
-        roleContents = await getContentsFromMaintainersFile(octokit, context, 'maintainers.yaml')
-        console.log(roleContents, "1")
-    }catch (e) {
-      throw new Error(`could not get authorized user: ${e}`)
-    }
+    // try{ 
+    //     roleContents = await getContentsFromMaintainersFile(octokit, context, 'maintainers.yaml')
+    //     console.log(roleContents, "1")
+    // }catch (e) {
+    //   throw new Error(`could not get authorized user: ${e}`)
+    // }
 
 
-    try{ 
-        rulesForRole = await getContentsFromMaintainersFile(octokit, context, '.github/config.yaml')
-        console.log(roleContents, "1")
-    }catch (e) {
-      throw new Error(`could not get authorized user: ${e}`)
-    }
+    // try{ 
+    //     rulesForRole = await getContentsFromMaintainersFile(octokit, context, '.github/config.yaml')
+    //     console.log(roleContents, "1")
+    // }catch (e) {
+    //   throw new Error(`could not get authorized user: ${e}`)
+    // }
 
   let ifCommenterIsAdmin = userPresentInMaintainers(roleContents, "admin", arg)
     console.log(ifCommenterIsAdmin, "2")

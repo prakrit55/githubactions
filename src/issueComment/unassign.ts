@@ -27,7 +27,7 @@ export const unassign = async (
     const commentArgs: string[] = getCommandArgs('/unassign', commentBody, commenterId)
   
     try {
-          const roleContents: any = getRoleOfUser(octokit, context, commenterId)
+          const roleContents: any = getRoleOfUser(commenterId, "", "")
     
           for (const key in roleContents) {
             if (roleContents[key]['unassign-others'] == true) {

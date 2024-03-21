@@ -26,6 +26,8 @@ export const assign = async (
   const commenterId: string = context.payload['comment']['user']['login']
   const commentBody: string = context.payload['comment']['body']
 
+  let roleContents, rulesForRole: any = ""
+
   if (issueNumber === undefined) {
     throw new Error(
       `github context payload missing issue number: ${context.payload}`
@@ -36,18 +38,25 @@ export const assign = async (
   console.log(commentArgs, "1")
 
   try{ 
-    let roleContents = await getContentsFromMaintainersFile(octokit, context, 'maintainers.yaml')
+    roleContents = await getContentsFromMaintainersFile(octokit, context, 'maintainers.yaml')
     console.log(roleContents, "12")
 }catch (e) {
   throw new Error(`could not get authorized user: ${e}`)
 }
 
+  try{ 
+        rulesForRole = await getContentsFromMaintainersFile(octokit, context, '.github/config.yaml')
+        console.log(roleContents, "1")
+    }catch (e) {
+      throw new Error(`could not get authorized user: ${e}`)
+    }
+
   try {
   await Promise.all(
     commentArgs.map(async arg => {
       console.log(arg, "arg")
-      const roleContents: any = getRoleOfUser(octokit, context, arg)
-      console.log(roleContents, "2")
+      const roleContent: any = getRoleOfUser(arg, roleContents, rulesForRole)
+      console.log(roleContent, "2")
 
       const issueps = await octokit.pulls.list({
         owner: "Keptn",
@@ -61,8 +70,8 @@ export const assign = async (
         repo: "keptn/lifecycle-toolkit",
         assignee: arg,
       })
-      for (const key in roleContents) {
-        if (roleContents[key]['max-assigned-issues'] == issues.data.length || roleContents[key]['max-opened-prs'] == userPullRequestCount) {
+      for (const key in roleContent) {
+        if (roleContent[key]['max-assigned-issues'] == issues.data.length || roleContent[key]['max-opened-prs'] == userPullRequestCount) {
           toReturn.push(true)
         } else {
           toReturn.push(false)
