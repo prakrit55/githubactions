@@ -134,7 +134,7 @@ for (const comm of toReturn) {
             })
             console.log('Assignees added:', namme.data);
       } catch (e) {
-        console.error('Error adding assignees:', error);
+        console.error('Error adding assignees:', e);
         throw new Error(`could not add assignees: ${e}`)
       }
       break
