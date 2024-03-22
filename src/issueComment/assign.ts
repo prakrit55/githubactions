@@ -67,6 +67,7 @@ let i = 0
 for (const comm of booleanArr) {
   if (comm == false) {
     console.log(commentArgs)
+    await assigned(context)
     commentApgs.push(commentArgs[i])
   } 
   i++
@@ -89,7 +90,6 @@ for (const comm of booleanArr) {
         console.error('Error adding assignees:', e);
         throw new Error(`could not add assignees: ${e}`)
       }
-      await assigned(context)
       break
   }
 }
