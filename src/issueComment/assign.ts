@@ -85,11 +85,11 @@ for (const comm of booleanArr) {
               issue_number: issueNumber,
               assignees: commentApgs
             })
-            await assigned()
       } catch (e) {
         console.error('Error adding assignees:', e);
         throw new Error(`could not add assignees: ${e}`)
       }
+      await assigned(context)
       break
   }
 }
