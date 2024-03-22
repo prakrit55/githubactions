@@ -4,7 +4,7 @@ import * as core from '@actions/core'
 import {Context} from '@actions/github/lib/context'
 
 import {getCommandArgs} from '../utills/command'
-import {getContentsFromMaintainersFile, checkCommenterAuth, getRoleOfUser, getConfirm} from '../utills/auth'
+import {checkCommenterAuth, getRoleOfUser, getConfirm} from '../utills/auth'
 
 /**
  * /assign will self assign with no argument
@@ -26,7 +26,6 @@ export const assign = async (
   const commenterId: string = context.payload['comment']['user']['login']
   const commentBody: string = context.payload['comment']['body']
 
-  let roleContents: string, rulesForRole: string = ""
 
   if (issueNumber === undefined) {
     throw new Error(
@@ -37,19 +36,6 @@ export const assign = async (
   let commentArgs: string[] = getCommandArgs('/assign', commentBody, commenterId)
   console.log(commentArgs, "1")
 
-//   try{ 
-//     roleContents = await getContentsFromMaintainersFile(octokit, context, 'maintainers.yaml')
-//     console.log(roleContents, "12")
-// }catch (e) {
-//   throw new Error(`could not get authorized user: ${e}`)
-// }
-
-//   try{ 
-//         rulesForRole = await getContentsFromMaintainersFile(octokit, context, '.github/config.yaml')
-//         console.log(roleContents, "1")
-//     }catch (e) {
-//       throw new Error(`could not get authorized user: ${e}`)
-//     }
 
   try {
   await Promise.all(
