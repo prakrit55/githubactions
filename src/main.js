@@ -62,15 +62,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.run = void 0;
 var core = __importStar(require("@actions/core"));
 var github = __importStar(require("@actions/github"));
-var assign_1 = require("./issueComment/assign");
-// import {handlePullReq} from './pullReq/handlePullReq'
+// import {assign} from './issueComment/assign'
+// import {unassign} from './issueComment/unassign'
+var handleIssueComment_1 = require("./issueComment/handleIssueComment");
 function run() {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             try {
                 switch (github.context.eventName) {
                     case 'issue_comment':
-                        (0, assign_1.assign)();
+                        (0, handleIssueComment_1.handleIssueComment)();
                         break;
                     default:
                         core.error("".concat(github.context.eventName, " not yet supported"));
