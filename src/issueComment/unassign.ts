@@ -4,7 +4,7 @@ import * as core from '@actions/core'
 import {Context} from '@actions/github/lib/context'
 
 import {getCommandArgs} from '../utills/command'
-import {getRoleOfUser} from '../utills/auth'
+import {getRoleOfUser, getConfirm} from '../utills/auth'
 
 export const unassign = async (
     context: Context = github.context
@@ -25,12 +25,13 @@ export const unassign = async (
   
     const commentArgs: string[] = getCommandArgs('/unassign', commentBody, commenterId)
     const roleContents: any = await getRoleOfUser(commenterId, octokit, context)
+
     
     if (roleContents['unassign-others'] == true) {
       isAuthUser = true
     }
 
-    console.log(roleContents['unassign-others'], "#######################################################            UNASSIGN OTHERS")
+    console.log(roleContents['unassign-others'],roleContents , "#######################################################            UNASSIGN OTHERS")
   
     if (isAuthUser) {
       try {
