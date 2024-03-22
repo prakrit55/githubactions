@@ -29,6 +29,8 @@ export const unassign = async (
     if (roleContents['unassign-others'] == true) {
       isAuthUser = true
     }
+
+    console.log(roleContents['unassign-others'], "#######################################################            UNASSIGN OTHERS")
   
     if (isAuthUser) {
       try {
