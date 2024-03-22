@@ -13,10 +13,6 @@ export async function run(): Promise<void> {
           handleIssueComment()
           break
 
-        case 'issue':
-          assigned()
-          break
-
         default:
           core.error(`${github.context.eventName} not yet supported`)
           break
