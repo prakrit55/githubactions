@@ -60,7 +60,7 @@ export const assign = async (
       const roleContent: any = await getRoleOfUser(commenterId, octokit, context)
       console.log(roleContent, "2")
       booleanArr = await getConfirm(octokit, commenterId, roleContent)
-      console.log(booleanArr, "################################Promise######################memememememeMEMEME")
+      console.log(booleanArr, "################################Promise######################memememememeMEMEME",commenterId)
       } else { 
 
       const roleContent: any = await getRoleOfUser(arg, octokit, context)
