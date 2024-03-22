@@ -37,29 +37,30 @@ export const assign = async (
   let commentArgs: string[] = getCommandArgs('/assign', commentBody, commenterId)
   console.log(commentArgs, "1")
 
-  try{ 
-    roleContents = await getContentsFromMaintainersFile(octokit, context, 'maintainers.yaml')
-    console.log(roleContents, "12")
-}catch (e) {
-  throw new Error(`could not get authorized user: ${e}`)
-}
+//   try{ 
+//     roleContents = await getContentsFromMaintainersFile(octokit, context, 'maintainers.yaml')
+//     console.log(roleContents, "12")
+// }catch (e) {
+//   throw new Error(`could not get authorized user: ${e}`)
+// }
 
-  try{ 
-        rulesForRole = await getContentsFromMaintainersFile(octokit, context, '.github/config.yaml')
-        console.log(roleContents, "1")
-    }catch (e) {
-      throw new Error(`could not get authorized user: ${e}`)
-    }
+//   try{ 
+//         rulesForRole = await getContentsFromMaintainersFile(octokit, context, '.github/config.yaml')
+//         console.log(roleContents, "1")
+//     }catch (e) {
+//       throw new Error(`could not get authorized user: ${e}`)
+//     }
 
   try {
   await Promise.all(
     commentArgs.map(async arg => {
       console.log(arg, "arg")
-      if (arg == "me") {
+      if (arg == 'me') {
 
-      const roleContent: any = getRoleOfUser(commenterId, octokit, context)
+      const roleContent: any = await getRoleOfUser(commenterId, octokit, context)
       console.log(roleContent, "2")
       booleanArr = await getConfirm(octokit, commenterId, roleContent)
+      console.log(booleanArr, "################################Promise")
       } else { 
 
       const roleContent: any = getRoleOfUser(arg, octokit, context)
