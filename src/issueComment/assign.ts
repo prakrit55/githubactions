@@ -51,27 +51,6 @@ export const assign = async (
       throw new Error(`could not get authorized user: ${e}`)
     }
 
-  try{
-    const issueps = await octokit.pulls.list({
-      owner: "prakrit55",
-      repo: "githubactions",
-      state: "open",
-    })
-    console.log(issueps, "prs")
-    console.log(issueps.data.filter.length)
-    console.log(issueps.data.length)
-  } catch (e){
-    throw new Error("no prs")
-  }
-
-  const issues = await octokit.issues.listForRepo ({
-    owner: "prakrit55",
-    repo: "githubactions",
-    assignee: "prakrit55",
-  })
-
-  console.log(issues.data.length)
-
   try {
   await Promise.all(
     commentArgs.map(async arg => {
@@ -81,13 +60,14 @@ export const assign = async (
       const roleContent: any = getRoleOfUser(commenterId, octokit, context)
       console.log(roleContent, "2")
       booleanArr = await getConfirm(octokit, commenterId, roleContent)
-      }
+      } else { 
 
       const roleContent: any = getRoleOfUser(arg, octokit, context)
       console.log(roleContent, "2")
 
       booleanArr = await getConfirm(octokit, arg, roleContent)
       console.log(booleanArr, "################################Promise")
+      }
     })
   )
   } catch (error) {

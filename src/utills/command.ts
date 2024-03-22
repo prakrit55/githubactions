@@ -53,7 +53,7 @@ const stripAtSign = (args: string[]): string[] => {
         toReturn.push(e.replace('@', ''))
       } else {
         toReturn.push(e)
-      }
+      } 
     }
   
     return toReturn
