@@ -67,11 +67,15 @@ let i = 0
 for (const comm of booleanArr) {
   if (comm == false) {
     console.log(commentArgs)
-    await assigned(context)
     commentApgs.push(commentArgs[i])
   } 
   i++
 }
+  try {
+    await assigned(context)
+  } catch (error) {
+    console.log(error)
+  }
 
   switch (commentApgs.length) {
     case 0:

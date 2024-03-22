@@ -26,10 +26,14 @@ export const assigned = async (
     )
   }
 
+  console.log("###########################################          111111111111111111111111     assigning")
+
   const labelIsPresent = await labelPresent(octokit, context, "assigned")
   if (labelIsPresent != "taken") {
     return
   }
+
+  console.log("###########################################               assigning")
 
   const issueLabels = await getCurrentLabels(octokit, context, issueNumber)
       if (issueLabels.includes(labelIsPresent)) {
