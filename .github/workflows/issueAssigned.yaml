@@ -1,7 +1,8 @@
 name: "Test issue assigned"
 on:
-    issues:
-      types: [opened, edited, assigned]
+  issues:
+    types: [opened, edited, assigned]
+    
 jobs:
   execute:
     runs-on: ubuntu-latest
