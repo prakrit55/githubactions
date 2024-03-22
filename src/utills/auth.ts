@@ -10,11 +10,10 @@ import { promiseHooks } from 'v8';
 
 const userReturnRole = (
   maintanersFile: string,
-  role: string,
-): string => {
-  const ruleData = yaml.load(maintanersFile) as any
-  const fit = ruleData[role]
-  return fit
+  role: any,
+): number[] => {
+  const ruleData = yaml.load(maintanersFile) as number[]
+  return [ruleData[role]]
 }
 
 const userPresentInMaintainers =  (
@@ -56,7 +55,7 @@ export const getContentsFromMaintainersFile = async (
     if (e instanceof RequestError) {
       if (e.status === 404) {
         core.debug('No OWNERS file found')
-        return "couldnot found "
+        return ""
       }
     }
 
@@ -75,25 +74,25 @@ export const getContentsFromMaintainersFile = async (
 }
 
 export const getRoleOfUser = async (
-  // octokit: github.GitHub,
-  // context: Context,
   arg: string,
-  roleContents: string,
-  rulesForRole: string,
-): Promise<string> => { 
-  // let roleContents, rulesForRole = ""
+  octokit: github.GitHub,
+  context: Context,
+  // roleContents: string,
+  // rulesForRole: string,
+): Promise<object> => { 
+  let roleContents = "", rulesForRole = ""
 
     // try{ 
-    //     roleContents = await getContentsFromMaintainersFile(octokit, context, 'maintainers.yaml')
-    //     console.log(roleContents, "1")
+        roleContents = await getContentsFromMaintainersFile(octokit, context, 'maintainers.yaml')
+        console.log(roleContents, "1")
     // }catch (e) {
     //   throw new Error(`could not get authorized user: ${e}`)
     // }
 
 
     // try{ 
-    //     rulesForRole = await getContentsFromMaintainersFile(octokit, context, '.github/config.yaml')
-    //     console.log(roleContents, "1")
+        rulesForRole = await getContentsFromMaintainersFile(octokit, context, '.github/config.yaml')
+        console.log(roleContents, "1")
     // }catch (e) {
     //   throw new Error(`could not get authorized user: ${e}`)
     // }
@@ -124,6 +123,41 @@ export const getRoleOfUser = async (
       console.log("default")
       return fordefault
   }
+}
+
+
+export const getConfirm = async (
+  octokit: github.GitHub,
+  arg: string,
+  roleContent: any,
+): Promise<boolean[]> => {
+  const toReturn: boolean[] = []
+  let userPullRequestCount= 0
+
+  const prs = await octokit.pulls.list({
+    owner: "prakrit55",
+    repo: "githubactions",
+    state: "open",
+  })
+  if (prs.data.length != 0) {
+    userPullRequestCount = prs.data.filter(pr => pr.user.login == arg).length
+  }
+  console.log(prs.data, "########################confirm")
+
+  const issues = await octokit.issues.listForRepo ({
+    owner: "prakrit55",
+    repo: "githubactions",
+    assignee: arg,
+  })
+
+  console.log(issues.data.length)
+    if (roleContent['max-assigned-issues'] == issues.data.length || roleContent['max-opened-prs'] == userPullRequestCount) {
+      toReturn.push(true)
+    } else {
+      toReturn.push(false)
+    }
+
+    return toReturn
 }
 /**
  * checkOrgMember will check to see if the given user is a repo org member

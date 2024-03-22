@@ -4,7 +4,7 @@ import * as core from '@actions/core'
 import {Context} from '@actions/github/lib/context'
 
 import {getCommandArgs} from '../utills/command'
-import {getContentsFromMaintainersFile, checkCommenterAuth, getRoleOfUser} from '../utills/auth'
+import {getContentsFromMaintainersFile, checkCommenterAuth, getRoleOfUser, getConfirm} from '../utills/auth'
 
 /**
  * /assign will self assign with no argument
@@ -15,8 +15,8 @@ import {getContentsFromMaintainersFile, checkCommenterAuth, getRoleOfUser} from 
 export const assign = async (
   context: Context = github.context
 ): Promise<void> => {
-  const toReturn: boolean[] = []
-  let commentApgs: string[] = []
+  let commentApgs: string[] = [], booleanArr: boolean[] = []
+
   core.debug(`starting assign job`)
 
   const token = core.getInput('github-token', {required: true})
@@ -76,34 +76,18 @@ export const assign = async (
   await Promise.all(
     commentArgs.map(async arg => {
       console.log(arg, "arg")
-      let userPullRequestCount = 0
-      const roleContent: any = getRoleOfUser(arg, roleContents, rulesForRole)
-      console.log(roleContent, "2")
+      if (arg == "me") {
 
-      const issueps = await octokit.pulls.list({
-        owner: "prakrit55",
-        repo: "githubactions",
-        state: "open",
-      })
-      if (issueps.data.length == 0) {
-        userPullRequestCount= 0
-        console.log(issueps.data.filter.length)
-      } else {
-        userPullRequestCount = issueps.data.filter(pr => pr.user.login == arg).length
+      const roleContent: any = getRoleOfUser(commenterId, octokit, context)
+      console.log(roleContent, "2")
+      booleanArr = await getConfirm(octokit, commenterId, roleContent)
       }
 
-      const issues = await octokit.issues.listForRepo ({
-        owner: "prakrit55",
-        repo: "githubactions",
-        assignee: arg,
-      })
+      const roleContent: any = getRoleOfUser(arg, octokit, context)
+      console.log(roleContent, "2")
 
-      console.log(issues.data.length)
-        if (roleContent['max-assigned-issues'] == issues.data.length || roleContent['max-opened-prs'] == userPullRequestCount) {
-          toReturn.push(true)
-        } else {
-          toReturn.push(false)
-        }
+      booleanArr = await getConfirm(octokit, arg, roleContent)
+      console.log(booleanArr, "################################Promise")
     })
   )
   } catch (error) {
@@ -111,7 +95,7 @@ export const assign = async (
     }
       
 let i = 0
-for (const comm of toReturn) {
+for (const comm of booleanArr) {
   if (comm == false) {
     console.log(commentArgs)
     commentApgs.push(commentArgs[i])
@@ -133,15 +117,6 @@ for (const comm of toReturn) {
               assignees: commentApgs
             })
             console.log('Assignees added:', namme.data, namme);
-            // await octokit.request(`POST /githubactions/{prakrit55}/{githubactions}/issues/{${issueNumber}}}/assignees`, {
-            //   owner: 'prakrit55',
-            //   repo: 'githubactions',
-            //   issue_number: issueNumber,
-            //   assignees: commentApgs,
-            //   headers: {
-            //     'X-GitHub-Api-Version': '2022-11-28'
-            //   }
-            // })
       } catch (e) {
         console.error('Error adding assignees:', e);
         throw new Error(`could not add assignees: ${e}`)
