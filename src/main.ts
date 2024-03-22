@@ -1,16 +1,17 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
-import {assign} from './issueComment/assign'
-// import {handlePullReq} from './pullReq/handlePullReq'
+// import {assign} from './issueComment/assign'
+// import {unassign} from './issueComment/unassign'
+import {handleIssueComment} from './issueComment/handleIssueComment'
 
 
 export async function run(): Promise<void> {
     try {
       switch (github.context.eventName) {
         case 'issue_comment':
-          assign()
+          handleIssueComment()
           break
-  
+
         default:
           core.error(`${github.context.eventName} not yet supported`)
           break
