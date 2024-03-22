@@ -4,8 +4,7 @@ import {RequestError} from '@octokit/request-error'
 import {Context} from '@actions/github/lib/context'
 import * as fs from 'fs';
 
-import yaml from 'js-yaml'
-import { promiseHooks } from 'v8';
+import yaml from 'js-yaml';
 
 
 const userReturnRole = (
@@ -81,37 +80,25 @@ export const getRoleOfUser = async (
   // rulesForRole: string,
 ): Promise<string> => { 
   let roleContents = "", rulesForRole = ""
-
         roleContents = await getContentsFromMaintainersFile(octokit, context, 'maintainers.yaml')
-        console.log(roleContents, "1")
-
         rulesForRole = await getContentsFromMaintainersFile(octokit, context, '.github/config.yaml')
-        console.log(rulesForRole, "1###########################################")
 
   let ifCommenterIsAdmin = userPresentInMaintainers(roleContents, "admin", arg)
-    console.log(ifCommenterIsAdmin, "2")
   const ifCommenterIsMaintainer = userPresentInMaintainers(roleContents, "maintainer", arg)
-    console.log(ifCommenterIsMaintainer, "3")
   const ifCommenterIsDeveloper = userPresentInMaintainers(roleContents, "developer", arg)
-    console.log(ifCommenterIsDeveloper, "4")
-  console.log(rulesForRole)
 
   switch (true) {
     case ifCommenterIsAdmin:
       const admin = userReturnRole(rulesForRole, "admin")
-      console.log(ifCommenterIsAdmin, "admin")
       return admin
     case ifCommenterIsMaintainer:
       const maintainer = userReturnRole(rulesForRole, "maintainer")
-      console.log(ifCommenterIsMaintainer, "mantainer")
       return maintainer
     case ifCommenterIsDeveloper:
       const developer = userReturnRole(rulesForRole, "developer")
-      console.log(ifCommenterIsDeveloper, "developer")
       return developer
     default:
       const fordefault = userReturnRole(rulesForRole, "default")
-      console.log("default")
       return fordefault
   }
 }
@@ -133,7 +120,6 @@ export const getConfirm = async (
   if (prs.data.length != 0) {
     userPullRequestCount = prs.data.filter(pr => pr.user.login == arg).length
   }
-  console.log(prs.data, "########################confirm")
 
   const issues = await octokit.issues.listForRepo ({
     owner: "prakrit55",
@@ -141,7 +127,6 @@ export const getConfirm = async (
     assignee: arg,
   })
 
-  console.log(issues.data.length)
     if (roleContent['max-assigned-issues'] == issues.data.length || roleContent['max-opened-prs'] == userPullRequestCount) {
       toReturn.push(true)
     } else {

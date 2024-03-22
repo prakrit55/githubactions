@@ -5,6 +5,8 @@ import {Context} from '@actions/github/lib/context'
 
 import {getCommandArgs} from '../utills/command'
 import {checkCommenterAuth, getRoleOfUser, getConfirm} from '../utills/auth'
+import { getCurrentLabels } from '../utills/labelling'
+import { assigned } from '../labels/assignd'
 
 /**
  * /assign will self assign with no argument
@@ -44,9 +46,7 @@ export const assign = async (
       if (arg == 'me') {
 
       const roleContent: any = await getRoleOfUser(commenterId, octokit, context)
-      console.log(roleContent, "2")
       booleanArr = await getConfirm(octokit, commenterId, roleContent)
-      console.log(booleanArr, "################################Promise######################memememememeMEMEME",commenterId)
       commentArgs = commentArgs.filter(word => word !== "me");
       commentArgs.push(commenterId)
       } else { 
@@ -85,7 +85,14 @@ for (const comm of booleanArr) {
               issue_number: issueNumber,
               assignees: commentApgs
             })
-            console.log('Assignees added:', namme.data, namme);
+
+            const issueLabels = await getCurrentLabels(octokit, context, issueNumber)
+
+            if (issueLabels.includes("taken")) {
+              console.log("The 'assigned' label is present on the issue.");
+            } else {
+              assigned()
+            }
       } catch (e) {
         console.error('Error adding assignees:', e);
         throw new Error(`could not add assignees: ${e}`)
