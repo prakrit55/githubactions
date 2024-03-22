@@ -89,13 +89,6 @@ for (const comm of booleanArr) {
         console.error('Error adding assignees:', e);
         throw new Error(`could not add assignees: ${e}`)
       }
-
-      const issueLabels = await getCurrentLabels(octokit, context, issueNumber)
-      if (issueLabels.includes("taken")) {
-        console.log("The 'assigned' label is present on the issue.");
-      } else {
-        assigned()
-      }
       break
   }
 }

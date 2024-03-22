@@ -3,6 +3,7 @@ import * as github from '@actions/github'
 // import {assign} from './issueComment/assign'
 // import {unassign} from './issueComment/unassign'
 import {handleIssueComment} from './issueComment/handleIssueComment'
+import { assigned } from './labels/assignd'
 
 
 export async function run(): Promise<void> {
@@ -10,6 +11,10 @@ export async function run(): Promise<void> {
       switch (github.context.eventName) {
         case 'issue_comment':
           handleIssueComment()
+          break
+
+        case 'issue':
+          assigned()
           break
 
         default:

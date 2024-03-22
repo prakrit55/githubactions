@@ -27,10 +27,15 @@ export const assigned = async (
   }
 
   const labelIsPresent = await labelPresent(octokit, context, "assigned")
-
   if (labelIsPresent != "taken") {
     return
   }
-  issueArray.push(labelIsPresent)
-  labelIssue(octokit, context, issueNumber, issueArray)
+
+  const issueLabels = await getCurrentLabels(octokit, context, issueNumber)
+      if (issueLabels.includes(labelIsPresent)) {
+        console.log("The 'assigned' label is present on the issue.");
+      } else {
+        issueArray.push(labelIsPresent)
+        await labelIssue(octokit, context, issueNumber, issueArray)
+      }
 }
