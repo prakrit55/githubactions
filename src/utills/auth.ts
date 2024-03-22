@@ -11,9 +11,9 @@ import { promiseHooks } from 'v8';
 const userReturnRole = (
   maintanersFile: string,
   role: any,
-): number[] => {
-  const ruleData = yaml.load(maintanersFile) as number[]
-  return [ruleData[role]]
+): string => {
+  const ruleData = yaml.load(maintanersFile) as string
+  return ruleData[role]
 }
 
 const userPresentInMaintainers =  (
@@ -79,7 +79,7 @@ export const getRoleOfUser = async (
   context: Context,
   // roleContents: string,
   // rulesForRole: string,
-): Promise<object> => { 
+): Promise<string> => { 
   let roleContents = "", rulesForRole = ""
 
         roleContents = await getContentsFromMaintainersFile(octokit, context, 'maintainers.yaml')
