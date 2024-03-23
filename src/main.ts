@@ -43,6 +43,5 @@ export async function run(): Promise<void> {
     } catch (error) {
       core.setFailed(String(error))
     }
-  }
-  
+}
   run()
