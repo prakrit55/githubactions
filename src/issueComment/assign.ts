@@ -71,11 +71,6 @@ for (const comm of booleanArr) {
   } 
   i++
 }
-  try {
-    await assigned(context)
-  } catch (error) {
-    console.log(error)
-  }
 
   switch (commentApgs.length) {
     case 0:
