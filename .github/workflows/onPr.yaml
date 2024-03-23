@@ -17,5 +17,5 @@ jobs:
              npm run build
 
       - uses: ./
-      - name: github-token
-        run: echo "${{ secrets.MY_NEW_GITHUB_TOKEN_APP }}" >> github-token
+        with:
+          github-token: ${{ secrets.MY_NEW_GITHUB_TOKEN_APP }} 
