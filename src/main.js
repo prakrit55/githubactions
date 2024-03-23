@@ -74,7 +74,7 @@ function run() {
                     case 'issue_comment':
                         (0, handleIssueComment_1.handleIssueComment)();
                         break;
-                    case 'pull_request_target':
+                    case 'pull_request':
                         onProgress_1.onPrOnReview;
                         break;
                     default:

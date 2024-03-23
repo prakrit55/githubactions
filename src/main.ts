@@ -14,8 +14,8 @@ export async function run(): Promise<void> {
           handleIssueComment()
           break
 
-        case 'pull_request_target':
-          onPrOnReview
+        case 'pull_request':
+          onPrOnReview(github.context)
           break
           
         default:
