@@ -99,3 +99,23 @@ if (!issueNumber && prBody) {
 }
   return issueNumber
   }
+
+
+  export const removeLabel = async (
+    octokit: github.GitHub,
+    context: Context,
+    issueNum: number,
+    label: string
+  ): Promise<void> => {
+
+      try {
+        await octokit.issues.removeLabel({
+          ...context.repo,
+          issue_number: issueNum,
+          name: label
+        })
+      } catch (e) {
+        core.debug(`could not remove labels: ${e}`)
+      }
+  }
+  
