@@ -6,9 +6,12 @@ import {handleIssueComment} from './issueComment/handleIssueComment'
 // import { assigned } from './labels/assignd'
 import {  onPrOnReview } from './labels/onProgress'
 import { onPrClosed } from './labels/onPrClosed'
+// import { assign } from './issueComment/assign'
+import { assigned } from './labels/assignd'
 
 
 export async function run(): Promise<void> {
+  const action: string | undefined = github.context.payload.action;
     try {
       switch (github.context.eventName) {
         case 'issue_comment':
@@ -16,11 +19,16 @@ export async function run(): Promise<void> {
           break
 
         case 'pull_request':
-          const action: string | undefined = github.context.payload.action;
           if (action == 'opened') {
           onPrOnReview(github.context)
           } else if (action == 'closed') {
             onPrClosed(github.context)
+          }
+          break
+
+        case 'issues':
+          if (action == 'assigned') {
+            assigned(github.context)
           }
           break
           

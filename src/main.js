@@ -68,22 +68,29 @@ var handleIssueComment_1 = require("./issueComment/handleIssueComment");
 // import { assigned } from './labels/assignd'
 var onProgress_1 = require("./labels/onProgress");
 var onPrClosed_1 = require("./labels/onPrClosed");
+// import { assign } from './issueComment/assign'
+var assignd_1 = require("./labels/assignd");
 function run() {
     return __awaiter(this, void 0, void 0, function () {
         var action;
         return __generator(this, function (_a) {
+            action = github.context.payload.action;
             try {
                 switch (github.context.eventName) {
                     case 'issue_comment':
                         (0, handleIssueComment_1.handleIssueComment)();
                         break;
                     case 'pull_request':
-                        action = github.context.payload.action;
                         if (action == 'opened') {
                             (0, onProgress_1.onPrOnReview)(github.context);
                         }
                         else if (action == 'closed') {
                             (0, onPrClosed_1.onPrClosed)(github.context);
+                        }
+                        break;
+                    case 'issues':
+                        if (action == 'assigned') {
+                            (0, assignd_1.assigned)(github.context);
                         }
                         break;
                     default:
