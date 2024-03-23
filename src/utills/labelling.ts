@@ -2,6 +2,7 @@ import * as github from '@actions/github'
 import {Context} from '@actions/github/lib/context'
 import * as core from '@actions/core'
 import { getContentsFromMaintainersFile } from './auth'
+import yaml from 'js-yaml';
 
 /**
  * getArgumentLabels will get the .github/labels.yaml or .github.labels.yml file.
@@ -60,14 +61,28 @@ export const labelIssue = async (
   }
   
 
+  function isStateInFile(
+    ownersContents: string,
+    role: string,
+  ): string {
+    core.debug(`checking if ${role} is in the ${ownersContents} in the OWNERS file`)
+    const ownersData = yaml.load(ownersContents) as any;
+  
+    return ownersData[role]
+  }
+  
+
   export const labelPresent = async (
     octokit: github.GitHub,
     context: Context,
     label: string
   ): Promise<string> => {
     const content: any = await getContentsFromMaintainersFile(octokit, context, ".github/config.yaml")
-    if (content[label] != "" ) {
+    const state: any = isStateInFile(content, "states")
+
+    if (state[label] != "" ) {
         return content[label]
     }
+    console.log(state, state[label])
     return ""
   }
