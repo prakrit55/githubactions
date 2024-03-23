@@ -19,6 +19,8 @@ export const onPrOnReview = async (context: Context): Promise<void> => {
 
   console.log(prBody, "###################################################### pr body and title", prTitle)
 
+  const prLabelArray: string[] = []
+
 
   if (prNumber === undefined) {
     throw new Error(
@@ -26,6 +28,7 @@ export const onPrOnReview = async (context: Context): Promise<void> => {
     )
   }
   const issueNumber = getIssueNummber(prBody, prTitle)
+  console.log(issueNumber, "#####################################################   issuenumber")
 
   let currentLabels: string[] = []
   try {
@@ -45,8 +48,7 @@ export const onPrOnReview = async (context: Context): Promise<void> => {
   if (labelIsPresent != "review") {
     return
   } else {
-    const prLabelArray: string[] = []
-    prLabelArray.push("taken")
+    prLabelArray.push("review")
     await labelIssue(octokit, context, issueNumber, prLabelArray)
   }
 }
