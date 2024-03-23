@@ -65,6 +65,7 @@ var github = __importStar(require("@actions/github"));
 // import {assign} from './issueComment/assign'
 // import {unassign} from './issueComment/unassign'
 var handleIssueComment_1 = require("./issueComment/handleIssueComment");
+var onProgress_1 = require("./labels/onProgress");
 function run() {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
@@ -72,6 +73,9 @@ function run() {
                 switch (github.context.eventName) {
                     case 'issue_comment':
                         (0, handleIssueComment_1.handleIssueComment)();
+                        break;
+                    case 'pull_request_target':
+                        onProgress_1.onPrOnReview;
                         break;
                     default:
                         core.error("".concat(github.context.eventName, " not yet supported"));
