@@ -21,7 +21,7 @@ export async function run(): Promise<void> {
 
         case 'pull_request':
           if (action == 'opened') {
-            console.log(action)
+            console.log(action) 
           onPrOnReview()
           } else if (action == 'closed') {
             onPrClosed()
