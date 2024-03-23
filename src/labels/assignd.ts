@@ -29,6 +29,8 @@ export const assigned = async (
   console.log("###########################################          111111111111111111111111     assigning")
 
   const labelIsPresent = await labelPresent(octokit, context, "assigned")
+
+  console.log(labelIsPresent)
   if (labelIsPresent != "taken") {
     return
   }

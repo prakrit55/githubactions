@@ -7,7 +7,7 @@ import * as fs from 'fs';
 import yaml from 'js-yaml';
 
 
-const userReturnRole = (
+export const userReturnRole = (
   maintanersFile: string,
   role: any,
 ): string => {

@@ -1,7 +1,7 @@
 import * as github from '@actions/github'
 import {Context} from '@actions/github/lib/context'
 import * as core from '@actions/core'
-import { getContentsFromMaintainersFile } from './auth'
+import { getContentsFromMaintainersFile, userReturnRole } from './auth'
 import yaml from 'js-yaml';
 
 /**
@@ -78,7 +78,7 @@ export const labelIssue = async (
     label: string
   ): Promise<string> => {
     const content: any = await getContentsFromMaintainersFile(octokit, context, ".github/config.yaml")
-    const state: any = isStateInFile(content, "states")
+    const state :any = userReturnRole(content, "states")
 
     if (state[label] != "" ) {
         return content[label]
