@@ -59,56 +59,67 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.run = void 0;
+exports.handleIssueComment = void 0;
 var core = __importStar(require("@actions/core"));
 var github = __importStar(require("@actions/github"));
-// import {assign} from './issueComment/assign'
-// import {unassign} from './issueComment/unassign'
-var handleIssueComment_1 = require("./issueComment/handleIssueComment");
-// import { assigned } from './labels/assignd'
-var onProgress_1 = require("./labels/onProgress");
-var onPrClosed_1 = require("./labels/onPrClosed");
-// import { assign } from './issueComment/assign'
-var assignd_1 = require("./labels/assignd");
-var unassigned_1 = require("./labels/unassigned");
-function run() {
-    return __awaiter(this, void 0, void 0, function () {
-        var action;
+var assign_1 = require("./assign");
+var unassign_1 = require("./unassign");
+var handleIssueComment = function (context) {
+    if (context === void 0) { context = github.context; }
+    return __awaiter(void 0, void 0, void 0, function () {
+        var commandConfig, commentBody;
         return __generator(this, function (_a) {
-            action = github.context.payload.action;
-            try {
-                switch (github.context.eventName) {
-                    case 'issue_comment':
-                        (0, handleIssueComment_1.handleIssueComment)();
-                        break;
-                    case 'pull_request':
-                        if (action == 'opened') {
-                            console.log(action);
-                            (0, onProgress_1.onPrOnReview)();
-                        }
-                        else if (action == 'closed') {
-                            (0, onPrClosed_1.onPrClosed)();
-                        }
-                        break;
-                    case 'issues':
-                        if (action == 'assigned') {
-                            (0, assignd_1.assigned)(github.context);
-                        }
-                        else {
-                            (0, unassigned_1.unassigned)();
-                        }
-                        break;
-                    default:
-                        core.error("".concat(github.context.eventName, " not yet supported"));
-                        break;
-                }
+            switch (_a.label) {
+                case 0:
+                    commandConfig = core
+                        .getInput('prow-commands', { required: false })
+                        .replace(/\n/g, ' ')
+                        .split(' ');
+                    commentBody = context.payload['comment']['body'];
+                    return [4 /*yield*/, Promise.all(commandConfig.map(function (command) { return __awaiter(void 0, void 0, void 0, function () {
+                            var _a;
+                            return __generator(this, function (_b) {
+                                switch (_b.label) {
+                                    case 0:
+                                        if (!commentBody.includes(command)) return [3 /*break*/, 5];
+                                        _a = command;
+                                        switch (_a) {
+                                            case '/assign': return [3 /*break*/, 1];
+                                            case '/unassign': return [3 /*break*/, 3];
+                                        }
+                                        return [3 /*break*/, 5];
+                                    case 1: return [4 /*yield*/, (0, assign_1.assign)(context).catch(function (e) { return __awaiter(void 0, void 0, void 0, function () {
+                                            return __generator(this, function (_a) {
+                                                return [2 /*return*/, e];
+                                            });
+                                        }); })];
+                                    case 2: return [2 /*return*/, _b.sent()];
+                                    case 3: return [4 /*yield*/, (0, unassign_1.unassign)(context).catch(function (e) { return __awaiter(void 0, void 0, void 0, function () {
+                                            return __generator(this, function (_a) {
+                                                return [2 /*return*/, e];
+                                            });
+                                        }); })];
+                                    case 4: return [2 /*return*/, _b.sent()];
+                                    case 5: return [2 /*return*/];
+                                }
+                            });
+                        }); }))
+                            .then(function (results) {
+                            for (var _i = 0, results_1 = results; _i < results_1.length; _i++) {
+                                var result = results_1[_i];
+                                if (result instanceof Error) {
+                                    throw new Error("error handling issue comment: ".concat(result));
+                                }
+                            }
+                        })
+                            .catch(function (e) {
+                            core.setFailed("".concat(e));
+                        })];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/];
             }
-            catch (error) {
-                core.setFailed(String(error));
-            }
-            return [2 /*return*/];
         });
     });
-}
-exports.run = run;
-run();
+};
+exports.handleIssueComment = handleIssueComment;

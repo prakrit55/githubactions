@@ -59,56 +59,58 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.run = void 0;
-var core = __importStar(require("@actions/core"));
+exports.onPrClosed = void 0;
 var github = __importStar(require("@actions/github"));
-// import {assign} from './issueComment/assign'
-// import {unassign} from './issueComment/unassign'
-var handleIssueComment_1 = require("./issueComment/handleIssueComment");
-// import { assigned } from './labels/assignd'
-var onProgress_1 = require("./labels/onProgress");
-var onPrClosed_1 = require("./labels/onPrClosed");
-// import { assign } from './issueComment/assign'
-var assignd_1 = require("./labels/assignd");
-var unassigned_1 = require("./labels/unassigned");
-function run() {
-    return __awaiter(this, void 0, void 0, function () {
-        var action;
-        return __generator(this, function (_a) {
-            action = github.context.payload.action;
-            try {
-                switch (github.context.eventName) {
-                    case 'issue_comment':
-                        (0, handleIssueComment_1.handleIssueComment)();
-                        break;
-                    case 'pull_request':
-                        if (action == 'opened') {
-                            console.log(action);
-                            (0, onProgress_1.onPrOnReview)();
-                        }
-                        else if (action == 'closed') {
-                            (0, onPrClosed_1.onPrClosed)();
-                        }
-                        break;
-                    case 'issues':
-                        if (action == 'assigned') {
-                            (0, assignd_1.assigned)(github.context);
-                        }
-                        else {
-                            (0, unassigned_1.unassigned)();
-                        }
-                        break;
-                    default:
-                        core.error("".concat(github.context.eventName, " not yet supported"));
-                        break;
-                }
+var core = __importStar(require("@actions/core"));
+var labelling_1 = require("../utills/labelling");
+/**
+ * Removes the 'lgtm' label after a pull request event
+ *
+ * @param context - The github actions event context
+ */
+var onPrClosed = function (context) {
+    if (context === void 0) { context = github.context; }
+    return __awaiter(void 0, void 0, void 0, function () {
+        var token, octokit, prNumber, prTitle, prBody, issueNumber;
+        var _a, _b, _c;
+        return __generator(this, function (_d) {
+            switch (_d.label) {
+                case 0:
+                    token = core.getInput('github-token', { required: true });
+                    octokit = new github.GitHub(token);
+                    prNumber = (_a = context.payload.pull_request) === null || _a === void 0 ? void 0 : _a.number;
+                    prTitle = (_b = context.payload.pull_request) === null || _b === void 0 ? void 0 : _b.title;
+                    prBody = (_c = context.payload.pull_request) === null || _c === void 0 ? void 0 : _c.body;
+                    console.log(prBody, "###################################################### pr body and title", prTitle);
+                    if (prNumber === undefined) {
+                        throw new Error("github context payload missing pr number: ".concat(context.payload));
+                    }
+                    issueNumber = (0, labelling_1.getIssueNummber)(prBody, prTitle);
+                    console.log(issueNumber, "#####################################################   issuenumber");
+                    return [4 /*yield*/, (0, labelling_1.removeLabel)(octokit, context, issueNumber, "review")
+                        //   let currentLabels: string[] = []
+                        //   try {
+                        //     currentLabels = await getCurrentLabels(octokit, context, issueNumber)
+                        //     core.debug(`remove-lgtm: found labels for issue ${currentLabels}`)
+                        //   } catch (e) {
+                        //     throw new Error(`could not get labels from issue: ${e}`)
+                        //   }
+                        //   if (!currentLabels.includes('review')) {
+                        //     return
+                        //   }
+                        //   const labelIsPresent = await labelPresent(octokit, context, 'in-review')
+                        //   console.log(labelIsPresent, "#########################################               onPrLabel")
+                        //   if (labelIsPresent != "review") {
+                        //     return
+                        //   } else {
+                        //     await removeLabel (octokit, context, issueNumber, "review")
+                        //   }
+                    ];
+                case 1:
+                    _d.sent();
+                    return [2 /*return*/];
             }
-            catch (error) {
-                core.setFailed(String(error));
-            }
-            return [2 /*return*/];
         });
     });
-}
-exports.run = run;
-run();
+};
+exports.onPrClosed = onPrClosed;

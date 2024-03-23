@@ -59,56 +59,55 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.run = void 0;
-var core = __importStar(require("@actions/core"));
+exports.assigned = void 0;
 var github = __importStar(require("@actions/github"));
-// import {assign} from './issueComment/assign'
-// import {unassign} from './issueComment/unassign'
-var handleIssueComment_1 = require("./issueComment/handleIssueComment");
-// import { assigned } from './labels/assignd'
-var onProgress_1 = require("./labels/onProgress");
-var onPrClosed_1 = require("./labels/onPrClosed");
-// import { assign } from './issueComment/assign'
-var assignd_1 = require("./labels/assignd");
-var unassigned_1 = require("./labels/unassigned");
-function run() {
-    return __awaiter(this, void 0, void 0, function () {
-        var action;
-        return __generator(this, function (_a) {
-            action = github.context.payload.action;
-            try {
-                switch (github.context.eventName) {
-                    case 'issue_comment':
-                        (0, handleIssueComment_1.handleIssueComment)();
-                        break;
-                    case 'pull_request':
-                        if (action == 'opened') {
-                            console.log(action);
-                            (0, onProgress_1.onPrOnReview)();
-                        }
-                        else if (action == 'closed') {
-                            (0, onPrClosed_1.onPrClosed)();
-                        }
-                        break;
-                    case 'issues':
-                        if (action == 'assigned') {
-                            (0, assignd_1.assigned)(github.context);
-                        }
-                        else {
-                            (0, unassigned_1.unassigned)();
-                        }
-                        break;
-                    default:
-                        core.error("".concat(github.context.eventName, " not yet supported"));
-                        break;
-                }
+var core = __importStar(require("@actions/core"));
+// import {getCommandArgs} from '../utils/command'
+var labelling_1 = require("../utills/labelling");
+/**
+ * /kind will add a kind/some-kind label
+ *
+ * @param context - the github actions event context
+ */
+var assigned = function (context) {
+    if (context === void 0) { context = github.context; }
+    return __awaiter(void 0, void 0, void 0, function () {
+        var token, octokit, issueArray, issueNumber, labelIsPresent, issueLabels;
+        var _a;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    token = core.getInput('github-token', { required: true });
+                    octokit = new github.GitHub(token);
+                    issueArray = [];
+                    issueNumber = (_a = context.payload.issue) === null || _a === void 0 ? void 0 : _a.number;
+                    if (issueNumber === undefined) {
+                        throw new Error("github context payload missing issue number: ".concat(context.payload));
+                    }
+                    console.log("###########################################          111111111111111111111111     assigning");
+                    return [4 /*yield*/, (0, labelling_1.labelPresent)(octokit, context, 'assigned')];
+                case 1:
+                    labelIsPresent = _b.sent();
+                    console.log(labelIsPresent);
+                    if (labelIsPresent != "taken") {
+                        return [2 /*return*/];
+                    }
+                    console.log("###########################################               assigning");
+                    return [4 /*yield*/, (0, labelling_1.getCurrentLabels)(octokit, context, issueNumber)];
+                case 2:
+                    issueLabels = _b.sent();
+                    if (!issueLabels.includes("taken")) return [3 /*break*/, 3];
+                    console.log("The 'assigned' label is present on the issue.");
+                    return [3 /*break*/, 5];
+                case 3:
+                    issueArray.push("taken");
+                    return [4 /*yield*/, (0, labelling_1.labelIssue)(octokit, context, issueNumber, issueArray)];
+                case 4:
+                    _b.sent();
+                    _b.label = 5;
+                case 5: return [2 /*return*/];
             }
-            catch (error) {
-                core.setFailed(String(error));
-            }
-            return [2 /*return*/];
         });
     });
-}
-exports.run = run;
-run();
+};
+exports.assigned = assigned;
