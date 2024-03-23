@@ -1,7 +1,6 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
 // import {assign} from './issueComment/assign'
-// import {unassign} from './issueComment/unassign'
 import {handleIssueComment} from './issueComment/handleIssueComment'
 // import { assigned } from './labels/assignd'
 import {  onPrOnReview } from './labels/onProgress'
