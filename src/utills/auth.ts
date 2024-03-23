@@ -12,6 +12,9 @@ export const userReturnRole = (
   role: any,
 ): string => {
   const ruleData = yaml.load(maintanersFile) as string
+
+
+  console.log(ruleData[role], "################################################               rulesdata")
   return ruleData[role]
 }
 

@@ -80,9 +80,9 @@ export const labelIssue = async (
     const content: any = await getContentsFromMaintainersFile(octokit, context, ".github/config.yaml")
     const state :any = userReturnRole(content, "states")
 
-    if (state[label] != "" ) {
+    if (state["assigned"] != "" ) {
         return content[label]
     }
-    console.log(state, state[label])
+    console.log(state, state[label], "#########################################    labelPresent")
     return ""
   }
