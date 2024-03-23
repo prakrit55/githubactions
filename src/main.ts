@@ -8,6 +8,7 @@ import {  onPrOnReview } from './labels/onProgress'
 import { onPrClosed } from './labels/onPrClosed'
 // import { assign } from './issueComment/assign'
 import { assigned } from './labels/assignd'
+import { unassigned } from './labels/unassigned'
 
 
 export async function run(): Promise<void> {
@@ -29,6 +30,8 @@ export async function run(): Promise<void> {
         case 'issues':
           if (action == 'assigned') {
             assigned(github.context)
+          } else {
+            unassigned()
           }
           break
           

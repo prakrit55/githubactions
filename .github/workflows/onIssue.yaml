@@ -2,7 +2,7 @@ name: Issue Assigned
 
 on:
   issues:
-    types: [ assigned ]
+    types: [ assigned, unassigned ]
 
 jobs:
   checker:
