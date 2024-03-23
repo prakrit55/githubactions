@@ -78,10 +78,10 @@ export const labelIssue = async (
     label: string
   ): Promise<string> => {
     const content: any = await getContentsFromMaintainersFile(octokit, context, ".github/config.yaml")
-    const state :any = userReturnRole(content, "states")
+    const state: any = userReturnRole(content, "states")
 
-    if (state["assigned"] != "" ) {
-        return content[label]
+    if (state[label] != "" ) {
+        return state[label]
     }
     console.log(state, state[label], "#########################################    labelPresent")
     return ""
