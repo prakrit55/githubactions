@@ -26,5 +26,7 @@ export async function run(): Promise<void> {
       core.setFailed(String(error))
     }
   }
-  
+
+
+
   run()
