@@ -3,16 +3,19 @@ name: PR has a valid Issue?
 on:
   pull_request:
     types: [ opened, reopened, closed ]
-permissions: read-all
+
 jobs:
   checker:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      - run: npm install
-      - run: npm run build
+      - name: Checkout
+        uses: actions/checkout@v2
+      
+      - name: Install & Build
+        run: npm install
+             npm run build
+
       - uses: ./
-        with:
-          jobs: 'lgtm'
-          github-token: "${{ secrets.MY_NEW_GITHUB_TOKEN_APP }}"
+      - name: github-token
+        run: echo "${{ secrets.MY_NEW_GITHUB_TOKEN_APP }}" >> github-token
