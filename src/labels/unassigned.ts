@@ -28,7 +28,6 @@ export const unassigned = async (
 
   console.log("###########################################          111111111111111111111111     assigning")
 
-  try { 
   const response = await octokit.request('GET /repos/{owner}/{repo}/issues/{issue_number}/assignees', {
     owner: 'prakrit55', // Replace with your GitHub username
     repo: 'githubactions',
@@ -36,9 +35,6 @@ export const unassigned = async (
   });
   numberOfAssignees = response.data.length;
   console.log('Number of Assignees:', numberOfAssignees);
-} catch (error) {
-  console.error('Error:', error);
-}
 
 //   const labelIsPresent = await labelPresent(octokit, context, 'assigned')
 

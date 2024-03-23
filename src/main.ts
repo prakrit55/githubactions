@@ -21,6 +21,7 @@ export async function run(): Promise<void> {
 
         case 'pull_request':
           if (action == 'opened') {
+            console.log(action)
           onPrOnReview(github.context)
           } else if (action == 'closed') {
             onPrClosed(github.context)
