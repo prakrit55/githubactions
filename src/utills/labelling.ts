@@ -60,16 +60,6 @@ export const labelIssue = async (
     }
   }
   
-
-  function isStateInFile(
-    ownersContents: string,
-    role: string,
-  ): string {
-    core.debug(`checking if ${role} is in the ${ownersContents} in the OWNERS file`)
-    const ownersData = yaml.load(ownersContents) as any;
-  
-    return ownersData[role]
-  }
   
 
   export const labelPresent = async (
@@ -85,4 +75,27 @@ export const labelIssue = async (
     }
     console.log(state, state[label], "#########################################    labelPresent")
     return ""
+  }
+
+
+  export const getIssueNummber = (prBody: string | undefined, prTitle: string | undefined): number =>{
+    let issueNumber: number = 0;
+
+if (prTitle) {
+    const issueRegex = /#(\d+)/;
+    const match = prTitle.match(issueRegex);
+    if (match) {
+        issueNumber = parseInt(match[1]);
+    }
+}
+
+// If the issue number wasn't found in the title, try to find it in the body
+if (!issueNumber && prBody) {
+    const issueRegex = /#(\d+)/;
+    const match = prBody.match(issueRegex);
+    if (match) {
+        issueNumber = parseInt(match[1]);
+    }
+}
+  return issueNumber
   }
