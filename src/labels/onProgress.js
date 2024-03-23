@@ -76,7 +76,7 @@ var onPrOnReview = function (context) {
         return __generator(this, function (_d) {
             switch (_d.label) {
                 case 0:
-                    token = core.getInput('github-token', { required: true });
+                    token = core.getInput('github-token');
                     octokit = new github.GitHub(token);
                     prNumber = (_a = context.payload.pull_request) === null || _a === void 0 ? void 0 : _a.number;
                     prTitle = (_b = context.payload.pull_request) === null || _b === void 0 ? void 0 : _b.title;
