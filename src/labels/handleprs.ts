@@ -24,6 +24,12 @@ export const handlePullReq = async (
             return await onPrOnReview(context).catch(async e => {
               return e
             })
+
+            case 'reopened':
+            core.debug('pr opened')
+            return await onPrOnReview(context).catch(async e => {
+              return e
+            })
   
           case 'closed':
             const runConfig = core.getInput('jobs', {required: false}).split(' ')

@@ -94,6 +94,7 @@ var onPrClosed = function (context) {
                 case 1:
                     response = _d.sent();
                     data = response.data;
+                    console.log(data.pull_request);
                     if (data.pull_request) {
                         return [2 /*return*/];
                     }

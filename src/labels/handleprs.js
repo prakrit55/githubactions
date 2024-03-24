@@ -77,13 +77,14 @@ var handlePullReq = function (context) {
                     action = context.payload.action;
                     _b.label = 1;
                 case 1:
-                    _b.trys.push([1, 8, , 9]);
+                    _b.trys.push([1, 10, , 11]);
                     _a = action;
                     switch (_a) {
                         case 'opened': return [3 /*break*/, 2];
-                        case 'closed': return [3 /*break*/, 4];
+                        case 'reopened': return [3 /*break*/, 4];
+                        case 'closed': return [3 /*break*/, 6];
                     }
-                    return [3 /*break*/, 6];
+                    return [3 /*break*/, 8];
                 case 2:
                     core.debug('pr opened');
                     return [4 /*yield*/, (0, onProgress_1.onPrOnReview)(context).catch(function (e) { return __awaiter(void 0, void 0, void 0, function () {
@@ -93,9 +94,17 @@ var handlePullReq = function (context) {
                         }); })];
                 case 3: return [2 /*return*/, _b.sent()];
                 case 4:
+                    core.debug('pr opened');
+                    return [4 /*yield*/, (0, onProgress_1.onPrOnReview)(context).catch(function (e) { return __awaiter(void 0, void 0, void 0, function () {
+                            return __generator(this, function (_a) {
+                                return [2 /*return*/, e];
+                            });
+                        }); })];
+                case 5: return [2 /*return*/, _b.sent()];
+                case 6:
                     runConfig = core.getInput('jobs', { required: false }).split(' ');
                     return [4 /*yield*/, (0, onPrClosed_1.onPrClosed)(context)];
-                case 5:
+                case 7:
                     issueNumber_1 = _b.sent();
                     issueNumber_1 !== null ? issueNumber_1 : undefined;
                     runConfig.map(function (command) { return __awaiter(void 0, void 0, void 0, function () {
@@ -111,16 +120,16 @@ var handlePullReq = function (context) {
                             }
                         });
                     }); });
-                    _b.label = 6;
-                case 6:
-                    core.error("".concat(github.context.eventName, " not yet supported"));
-                    return [3 /*break*/, 7];
-                case 7: return [3 /*break*/, 9];
+                    _b.label = 8;
                 case 8:
+                    core.error("".concat(github.context.eventName, " not yet supported"));
+                    return [3 /*break*/, 9];
+                case 9: return [3 /*break*/, 11];
+                case 10:
                     e_1 = _b.sent();
                     core.setFailed("".concat(e_1));
-                    return [3 /*break*/, 9];
-                case 9: return [2 /*return*/];
+                    return [3 /*break*/, 11];
+                case 11: return [2 /*return*/];
             }
         });
     });
