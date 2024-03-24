@@ -13,6 +13,7 @@ jobs:
       - uses: ./
         with:
           prow-commands: '/assign 
+            /done
             /unassign'
           github-token: "${{ secrets.MY_NEW_GITHUB_TOKEN_APP }}"
           # configuration-path: .github/config.yaml
