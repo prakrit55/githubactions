@@ -27,7 +27,7 @@ jobs:
       - name: Install & Build
         run: npm install
              npm run build
-      - uses: /
+      - uses: ./
         with:
           jobs: 'pr-merged'
           github-token: ${{ secrets.MY_NEW_GITHUB_TOKEN_APP }}
