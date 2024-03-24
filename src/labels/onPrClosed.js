@@ -71,7 +71,7 @@ var labelling_1 = require("../utills/labelling");
 var onPrClosed = function (context) {
     if (context === void 0) { context = github.context; }
     return __awaiter(void 0, void 0, void 0, function () {
-        var token, octokit, prNumber, prTitle, prBody, issueNumber, response, linkedPRCount, data;
+        var token, octokit, prNumber, prTitle, prBody, issueNumber, response, linkedPRCount;
         var _a, _b, _c;
         return __generator(this, function (_d) {
             switch (_d.label) {
@@ -94,12 +94,12 @@ var onPrClosed = function (context) {
                 case 1:
                     response = _d.sent();
                     linkedPRCount = 0;
-                    data = response.data.forEach(function (pullRequest) {
+                    response.data.forEach(function (pullRequest) {
                         if (pullRequest.issue_url) {
                             linkedPRCount++;
                         }
                     });
-                    console.log(data, "#############################", linkedPRCount);
+                    console.log(response.data, "#############################", linkedPRCount);
                     if (linkedPRCount >= 0) {
                         return [2 /*return*/];
                     }
