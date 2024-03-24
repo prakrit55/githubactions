@@ -120,7 +120,7 @@ var handlePullReq = function (context) {
                             }
                         });
                     }); });
-                    _b.label = 8;
+                    return [3 /*break*/, 9];
                 case 8:
                     core.error("".concat(github.context.eventName, " not yet supported"));
                     return [3 /*break*/, 9];

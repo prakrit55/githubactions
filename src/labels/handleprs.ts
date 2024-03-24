@@ -40,6 +40,7 @@ export const handlePullReq = async (
                     await labelIssue(octokit, context, issueNumber, ["done"])
                 }
             })
+            break
   
           default:
             core.error(`${github.context.eventName} not yet supported`)
