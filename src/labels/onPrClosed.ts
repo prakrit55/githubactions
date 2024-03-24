@@ -34,8 +34,8 @@ export const onPrClosed = async (context: Context = github.context): Promise<num
 });
 
   let data = response.data
-  console.log(data.pull_request)
-  if (data.pull_request) {
+  console.log(data.pull_request,"#############################", data)
+  if (data.pull_request != undefined) {
     return 
   }
 
