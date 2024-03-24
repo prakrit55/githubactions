@@ -9,6 +9,7 @@ import { onPrClosed } from './labels/onPrClosed'
 // import { assign } from './issueComment/assign'
 import { assigned } from './labels/assignd'
 import { unassigned } from './labels/unassigned'
+import { handlePullReq } from './labels/handleprs'
 
 
 export async function run(): Promise<void> {
@@ -20,12 +21,7 @@ export async function run(): Promise<void> {
           break
 
         case 'pull_request':
-          if (action == 'opened') {
-            console.log(action)
-          onPrOnReview()
-          } else if (action == 'closed') {
-            onPrClosed()
-          }
+          handlePullReq()
           break
 
         case 'issues':

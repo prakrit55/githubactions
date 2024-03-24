@@ -2,7 +2,7 @@ name: PR has a valid Issue?
 
 on:
   pull_request:
-    types: [ opened, reopened, closed ]
+    types: [ opened, reopened, closed, converted_to_draft]
 
 jobs:
   checker:
@@ -10,12 +10,22 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
-      
+        uses: actions/checkout@v2
       - name: Install & Build
         run: npm install
              npm run build
-
       - uses: ./
         with:
-          github-token: ${{ secrets.MY_NEW_GITHUB_TOKEN_APP }} 
+          github-token: ${{ secrets.MY_NEW_GITHUB_TOKEN_APP }}
+
+  if_merged:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install & Build
+        run: npm install
+             npm run build
+      - uses: ./
+        with:
+          jobs: 'pr-merged'
+          github-token: ${{ secrets.MY_NEW_GITHUB_TOKEN_APP }}

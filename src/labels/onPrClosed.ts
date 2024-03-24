@@ -9,8 +9,8 @@ import {getCurrentLabels, getIssueNummber, labelPresent, removeLabel} from '../u
  *
  * @param context - The github actions event context
  */
-export const onPrClosed = async (context: Context = github.context): Promise<void> => {
-  const token = core.getInput('github-token',{required: true})
+export const onPrClosed = async (context: Context = github.context): Promise<number | void> => {
+  const token = core.getInput('github-token',{required: false})
   const octokit = new github.GitHub(token)
 
   const prNumber: number | undefined = context.payload.pull_request?.number
@@ -26,8 +26,23 @@ export const onPrClosed = async (context: Context = github.context): Promise<voi
     )
   }
   const issueNumber = getIssueNummber(prBody, prTitle)
+
+  const response = await octokit.issues.get({
+    owner: 'prakrit55',
+    repo: 'githubactions',
+    issue_number: issueNumber
+});
+
+  let data = response.data
+  if (data.pull_request) {
+    return 
+  }
+
+
   console.log(issueNumber, "#####################################################   issuenumber")
   await removeLabel(octokit, context, issueNumber, "review")
+
+  return issueNumber
 
 //   let currentLabels: string[] = []
 //   try {

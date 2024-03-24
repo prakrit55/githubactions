@@ -65,12 +65,10 @@ var github = __importStar(require("@actions/github"));
 // import {assign} from './issueComment/assign'
 // import {unassign} from './issueComment/unassign'
 var handleIssueComment_1 = require("./issueComment/handleIssueComment");
-// import { assigned } from './labels/assignd'
-var onProgress_1 = require("./labels/onProgress");
-var onPrClosed_1 = require("./labels/onPrClosed");
 // import { assign } from './issueComment/assign'
 var assignd_1 = require("./labels/assignd");
 var unassigned_1 = require("./labels/unassigned");
+var handleprs_1 = require("./labels/handleprs");
 function run() {
     return __awaiter(this, void 0, void 0, function () {
         var action;
@@ -82,13 +80,7 @@ function run() {
                         (0, handleIssueComment_1.handleIssueComment)();
                         break;
                     case 'pull_request':
-                        if (action == 'opened') {
-                            console.log(action);
-                            (0, onProgress_1.onPrOnReview)();
-                        }
-                        else if (action == 'closed') {
-                            (0, onPrClosed_1.onPrClosed)();
-                        }
+                        (0, handleprs_1.handlePullReq)();
                         break;
                     case 'issues':
                         if (action == 'assigned') {
