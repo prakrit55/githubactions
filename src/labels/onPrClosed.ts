@@ -27,15 +27,20 @@ export const onPrClosed = async (context: Context = github.context): Promise<num
   }
   const issueNumber = getIssueNummber(prBody, prTitle)
 
-  const response = await octokit.issues.get({
+  const response = await octokit.pulls.list({
     owner: 'prakrit55',
     repo: 'githubactions',
-    issue_number: issueNumber
 });
 
-  let data = response.data
-  console.log(data.pull_request,"#############################", data)
-  if (data.pull_request != undefined) {
+let linkedPRCount = 0
+
+  let data = response.data.forEach(pullRequest => {
+    if (pullRequest.issue_url) {
+        linkedPRCount++;
+    }
+});
+  console.log(data,"#############################", data)
+  if (linkedPRCount >= 0) {
     return 
   }
 
