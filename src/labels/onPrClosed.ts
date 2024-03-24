@@ -30,6 +30,7 @@ export const onPrClosed = async (context: Context = github.context): Promise<num
   const response = await octokit.pulls.list({
     owner: 'prakrit55',
     repo: 'githubactions',
+    state: 'open',
 });
 
 let linkedPRCount = 0
@@ -39,7 +40,7 @@ let linkedPRCount = 0
         linkedPRCount++;
     }
 });
-  console.log(data,"#############################", data)
+  console.log(data,"#############################", linkedPRCount)
   if (linkedPRCount >= 0) {
     return 
   }
