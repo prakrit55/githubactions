@@ -36,12 +36,12 @@ export const onPrClosed = async (context: Context = github.context): Promise<num
 let linkedPRCount = 0
 
   response.data.forEach(pullRequest => {
-    if (pullRequest.issue_url) {
+    if (pullRequest.body.includes(`#${issueNumber}`)) {
         linkedPRCount++;
     }
 });
   console.log(response.data,"#############################", linkedPRCount)
-  if (linkedPRCount >= 0) {
+  if (linkedPRCount > 0) {
     return 
   }
 

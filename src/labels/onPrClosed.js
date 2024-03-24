@@ -95,12 +95,12 @@ var onPrClosed = function (context) {
                     response = _d.sent();
                     linkedPRCount = 0;
                     response.data.forEach(function (pullRequest) {
-                        if (pullRequest.issue_url) {
+                        if (pullRequest.body.includes("#".concat(issueNumber))) {
                             linkedPRCount++;
                         }
                     });
                     console.log(response.data, "#############################", linkedPRCount);
-                    if (linkedPRCount >= 0) {
+                    if (linkedPRCount > 0) {
                         return [2 /*return*/];
                     }
                     console.log(issueNumber, "#####################################################   issuenumber");
