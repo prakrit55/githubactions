@@ -1,15 +1,10 @@
-name: PR has a valid Issue?
+name: CI
 
 on:
   pull_request:
     types: [ opened, reopened, closed, converted_to_draft]
     branches:
       - 'main'
-
-permissions:
-  contents: read
-  pull-requests: read
-  actions: read
 
 jobs:
   checker:
