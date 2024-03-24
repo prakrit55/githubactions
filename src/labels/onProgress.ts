@@ -2,7 +2,7 @@ import * as github from '@actions/github'
 
 import {Context} from '@actions/github/lib/context'
 import * as core from '@actions/core'
-import {getCurrentLabels, getIssueNummber, labelPresent, labelIssue} from '../utills/labelling'
+import {getCurrentLabels, getIssueNummber, labelPresent, labelIssue, removeLabel} from '../utills/labelling'
 
 /**
  * Removes the 'lgtm' label after a pull request event
@@ -39,6 +39,9 @@ export const onPrOnReview = async (context: Context = github.context): Promise<v
     throw new Error(`could not get labels from issue: ${e}`)
   }
 
+  if (currentLabels.includes('done')) {
+    await removeLabel(octokit, context, issueNumber, 'done')
+  }
   if (currentLabels.includes('review')) {
     return
   }

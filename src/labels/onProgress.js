@@ -102,22 +102,28 @@ var onPrOnReview = function (context) {
                     e_1 = _d.sent();
                     throw new Error("could not get labels from issue: ".concat(e_1));
                 case 4:
+                    if (!currentLabels.includes('done')) return [3 /*break*/, 6];
+                    return [4 /*yield*/, (0, labelling_1.removeLabel)(octokit, context, issueNumber, 'done')];
+                case 5:
+                    _d.sent();
+                    _d.label = 6;
+                case 6:
                     if (currentLabels.includes('review')) {
                         return [2 /*return*/];
                     }
                     return [4 /*yield*/, (0, labelling_1.labelPresent)(octokit, context, 'in-review')];
-                case 5:
+                case 7:
                     labelIsPresent = _d.sent();
                     console.log(labelIsPresent, "#########################################               onPrLabel");
-                    if (!(labelIsPresent != "review")) return [3 /*break*/, 6];
+                    if (!(labelIsPresent != "review")) return [3 /*break*/, 8];
                     return [2 /*return*/];
-                case 6:
+                case 8:
                     prLabelArray.push("review");
                     return [4 /*yield*/, (0, labelling_1.labelIssue)(octokit, context, issueNumber, prLabelArray)];
-                case 7:
+                case 9:
                     _d.sent();
-                    _d.label = 8;
-                case 8: return [2 /*return*/];
+                    _d.label = 10;
+                case 10: return [2 /*return*/];
             }
         });
     });
