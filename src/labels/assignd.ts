@@ -45,3 +45,5 @@ export const assigned = async (
         await labelIssue(octokit, context, issueNumber, issueArray)
       }
 }
+
+
