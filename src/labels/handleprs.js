@@ -72,7 +72,7 @@ var handlePullReq = function (context) {
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
-                    token = core.getInput('github-token', { required: true });
+                    token = core.getInput('github-token', { required: false });
                     octokit = new github.GitHub(token);
                     action = context.payload.action;
                     _b.label = 1;
