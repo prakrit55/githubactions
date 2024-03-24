@@ -71,7 +71,7 @@ var labelling_1 = require("../utills/labelling");
 var onPrClosed = function (context) {
     if (context === void 0) { context = github.context; }
     return __awaiter(void 0, void 0, void 0, function () {
-        var token, octokit, prNumber, prTitle, prBody, issueNumber, response, data;
+        var token, octokit, prNumber, prTitle, prBody, issueNumber, response, linkedPRCount, data;
         var _a, _b, _c;
         return __generator(this, function (_d) {
             switch (_d.label) {
@@ -86,16 +86,21 @@ var onPrClosed = function (context) {
                         throw new Error("github context payload missing pr number: ".concat(context.payload));
                     }
                     issueNumber = (0, labelling_1.getIssueNummber)(prBody, prTitle);
-                    return [4 /*yield*/, octokit.issues.get({
+                    return [4 /*yield*/, octokit.pulls.list({
                             owner: 'prakrit55',
                             repo: 'githubactions',
-                            issue_number: issueNumber
+                            state: 'open',
                         })];
                 case 1:
                     response = _d.sent();
-                    data = response.data;
-                    console.log(data.pull_request, "#############################", data);
-                    if (data.pull_request != undefined) {
+                    linkedPRCount = 0;
+                    data = response.data.forEach(function (pullRequest) {
+                        if (pullRequest.issue_url) {
+                            linkedPRCount++;
+                        }
+                    });
+                    console.log(data, "#############################", linkedPRCount);
+                    if (linkedPRCount >= 0) {
                         return [2 /*return*/];
                     }
                     console.log(issueNumber, "#####################################################   issuenumber");
