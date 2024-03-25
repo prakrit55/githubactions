@@ -20,7 +20,6 @@ jobs:
       - name: Install & Build
         run: npm install
              npm run build
-      - uses: ./
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4.0.1
         with:
@@ -36,9 +35,6 @@ jobs:
       - name: Install & Build
         run: npm install
              npm run build
-      - uses: ./
-        with:
-          jobs: 'pr-merged'
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4.0.1
         with:
