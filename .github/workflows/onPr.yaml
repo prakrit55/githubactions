@@ -5,7 +5,7 @@ on:
     types: [ opened, reopened, closed, converted_to_draft]
     branches:
       - 'main'
-
+permissions: read-all
 jobs:
   checker:
     runs-on: ubuntu-latest
