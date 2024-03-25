@@ -15,7 +15,7 @@ export const handlePullReq = async (
   ): Promise<void> => {
     const token = core.getInput('github-token', {required: true})
     console.log(token, "############################################# token")
-    const octokit = new github.GitHub(token)
+    const octokit = new github.GitHub("MY_NEW_GITHUB_TOKEN_APP")
     const action: string | undefined = context.payload.action;
 
         try {

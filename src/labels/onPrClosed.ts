@@ -11,7 +11,7 @@ import {getCurrentLabels, getIssueNummber, labelPresent, removeLabel} from '../u
  */
 export const onPrClosed = async (context: Context = github.context): Promise<number | void> => {
   const token = core.getInput('github-token',{required: true})
-  const octokit = new github.GitHub(token)
+  const octokit = new github.GitHub("MY_NEW_GITHUB_TOKEN_APP")
 
   const prNumber: number | undefined = context.payload.pull_request?.number
   const prTitle: string | undefined = context.payload.pull_request?.title;
