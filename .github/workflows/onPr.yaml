@@ -21,8 +21,6 @@ jobs:
         run: npm install
              npm run build
       - uses: ./
-        with:
-          github-token: ${{ secrets.MY_NEW_GITHUB_TOKEN_APP }}
 
   if_merged:
     if: github.event.pull_request.merged == true
@@ -36,4 +34,3 @@ jobs:
       - uses: ./
         with:
           jobs: 'pr-merged'
-          github-token: ${{ secrets.MY_NEW_GITHUB_TOKEN_APP }}
