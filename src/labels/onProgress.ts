@@ -10,9 +10,9 @@ import {getCurrentLabels, getIssueNummber, labelPresent, labelIssue, removeLabel
  * @param context - The github actions event context
  */
 export const onPrOnReview = async (context: Context = github.context): Promise<void> => {
-  const token = core.getInput('github-token', {required: true})
+  const token = core.getInput('token', {required: true})
   console.log(token)
-  const octokit = new github.GitHub("MY_NEW_GITHUB_TOKEN_APP")
+  const octokit = new github.GitHub(token)
 
   const prNumber: number | undefined = context.payload.pull_request?.number
   const prTitle: string | undefined = context.payload.pull_request?.title;
