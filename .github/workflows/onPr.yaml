@@ -17,6 +17,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.MY_NEW_GITHUB_TOKEN_APP }}
       - name: Install & Build
         run: npm install
              npm run build
