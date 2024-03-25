@@ -10,7 +10,7 @@ import {getCurrentLabels, getIssueNummber, labelPresent, removeLabel} from '../u
  * @param context - The github actions event context
  */
 export const onPrClosed = async (context: Context = github.context): Promise<number | void> => {
-  const token = core.getInput('github-token',{required: false})
+  const token = core.getInput('github-token',{required: true})
   const octokit = new github.GitHub(token)
 
   const prNumber: number | undefined = context.payload.pull_request?.number

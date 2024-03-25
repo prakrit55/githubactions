@@ -13,7 +13,7 @@ import { labelIssue } from '../utills/labelling'
 export const handlePullReq = async (
     context: Context = github.context
   ): Promise<void> => {
-    const token = core.getInput('github-token', {required: false})
+    const token = core.getInput('github-token', {required: true})
     console.log(token, "############################################# token")
     const octokit = new github.GitHub(token)
     const action: string | undefined = context.payload.action;
