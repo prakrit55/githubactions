@@ -22,9 +22,7 @@ export const handlePullReq = async (
         switch (action) {
           case 'opened' || 'reopened':
             core.debug('pr opened')
-            return await onPrOnReview(context).catch(async e => {
-              return e
-            })
+            await onPrOnReview(context)
             break
   
           case 'closed':
