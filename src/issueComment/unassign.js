@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -59,48 +70,50 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.run = void 0;
-var core = __importStar(require("@actions/core"));
+exports.unassign = void 0;
 var github = __importStar(require("@actions/github"));
-// import {assign} from './issueComment/assign'
-// import {unassign} from './issueComment/unassign'
-var handleIssueComment_1 = require("./issueComment/handleIssueComment");
-// import { assign } from './issueComment/assign'
-var assignd_1 = require("./labels/assignd");
-var unassigned_1 = require("./labels/unassigned");
-var handleprs_1 = require("./labels/handleprs");
-function run() {
-    return __awaiter(this, void 0, void 0, function () {
-        var action;
-        return __generator(this, function (_a) {
-            action = github.context.payload.action;
-            try {
-                switch (github.context.eventName) {
-                    case 'issue_comment':
-                        (0, handleIssueComment_1.handleIssueComment)();
-                        break;
-                    case 'pull_request_target':
-                        (0, handleprs_1.handlePullReq)();
-                        break;
-                    case 'issues':
-                        if (action == 'assigned') {
-                            (0, assignd_1.assigned)(github.context);
-                        }
-                        else {
-                            (0, unassigned_1.unassigned)();
-                        }
-                        break;
-                    default:
-                        core.error("".concat(github.context.eventName, " not yet supported"));
-                        break;
-                }
+var core = __importStar(require("@actions/core"));
+var command_1 = require("../utills/command");
+var auth_1 = require("../utills/auth");
+var unassign = function (context) {
+    if (context === void 0) { context = github.context; }
+    return __awaiter(void 0, void 0, void 0, function () {
+        var isAuthUser, token, octokit, issueNumber, commenterId, commentBody, commentArgs, roleContents, e_1;
+        var _a;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    isAuthUser = false;
+                    token = core.getInput('github-token', { required: true });
+                    octokit = new github.GitHub(token);
+                    issueNumber = (_a = context.payload.issue) === null || _a === void 0 ? void 0 : _a.number;
+                    commenterId = context.payload['comment']['user']['login'];
+                    commentBody = context.payload['comment']['body'];
+                    if (issueNumber === undefined) {
+                        throw new Error("github context payload missing issue number: ".concat(context.payload));
+                    }
+                    commentArgs = (0, command_1.getCommandArgs)('/unassign', commentBody, commenterId);
+                    return [4 /*yield*/, (0, auth_1.getRoleOfUser)(commenterId, octokit, context)];
+                case 1:
+                    roleContents = _b.sent();
+                    if (roleContents['unassign-others'] == true) {
+                        isAuthUser = true;
+                    }
+                    console.log(roleContents['unassign-others'], roleContents, "#######################################################            UNASSIGN OTHERS");
+                    if (!isAuthUser) return [3 /*break*/, 5];
+                    _b.label = 2;
+                case 2:
+                    _b.trys.push([2, 4, , 5]);
+                    return [4 /*yield*/, octokit.issues.removeAssignees(__assign(__assign({}, context.repo), { issue_number: issueNumber, assignees: commentArgs }))];
+                case 3:
+                    _b.sent();
+                    return [3 /*break*/, 5];
+                case 4:
+                    e_1 = _b.sent();
+                    throw new Error("could not remove assignee: ".concat(e_1));
+                case 5: return [2 /*return*/];
             }
-            catch (error) {
-                core.setFailed(String(error));
-            }
-            return [2 /*return*/];
         });
     });
-}
-exports.run = run;
-run();
+};
+exports.unassign = unassign;

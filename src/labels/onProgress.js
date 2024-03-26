@@ -59,48 +59,73 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.run = void 0;
-var core = __importStar(require("@actions/core"));
+exports.onPrOnReview = void 0;
 var github = __importStar(require("@actions/github"));
-// import {assign} from './issueComment/assign'
-// import {unassign} from './issueComment/unassign'
-var handleIssueComment_1 = require("./issueComment/handleIssueComment");
-// import { assign } from './issueComment/assign'
-var assignd_1 = require("./labels/assignd");
-var unassigned_1 = require("./labels/unassigned");
-var handleprs_1 = require("./labels/handleprs");
-function run() {
-    return __awaiter(this, void 0, void 0, function () {
-        var action;
-        return __generator(this, function (_a) {
-            action = github.context.payload.action;
-            try {
-                switch (github.context.eventName) {
-                    case 'issue_comment':
-                        (0, handleIssueComment_1.handleIssueComment)();
-                        break;
-                    case 'pull_request_target':
-                        (0, handleprs_1.handlePullReq)();
-                        break;
-                    case 'issues':
-                        if (action == 'assigned') {
-                            (0, assignd_1.assigned)(github.context);
-                        }
-                        else {
-                            (0, unassigned_1.unassigned)();
-                        }
-                        break;
-                    default:
-                        core.error("".concat(github.context.eventName, " not yet supported"));
-                        break;
-                }
+var core = __importStar(require("@actions/core"));
+var labelling_1 = require("../utills/labelling");
+/**
+ * Removes the 'lgtm' label after a pull request event
+ *
+ * @param context - The github actions event context
+ */
+var onPrOnReview = function (context) {
+    if (context === void 0) { context = github.context; }
+    return __awaiter(void 0, void 0, void 0, function () {
+        var token, octokit, prNumber, prTitle, prBody, prLabelArray, issueNumber, currentLabels, e_1, labelIsPresent;
+        var _a, _b, _c;
+        return __generator(this, function (_d) {
+            switch (_d.label) {
+                case 0:
+                    token = core.getInput('github-token', { required: true });
+                    console.log(token);
+                    octokit = new github.GitHub(token);
+                    prNumber = (_a = context.payload.pull_request) === null || _a === void 0 ? void 0 : _a.number;
+                    prTitle = (_b = context.payload.pull_request) === null || _b === void 0 ? void 0 : _b.title;
+                    prBody = (_c = context.payload.pull_request) === null || _c === void 0 ? void 0 : _c.body;
+                    console.log(prBody, "###################################################### pr body and title", prTitle);
+                    prLabelArray = [];
+                    if (prNumber === undefined) {
+                        throw new Error("github context payload missing pr number: ".concat(context.payload));
+                    }
+                    issueNumber = (0, labelling_1.getIssueNummber)(prBody, prTitle);
+                    console.log(issueNumber, "#####################################################   issuenumber");
+                    currentLabels = [];
+                    _d.label = 1;
+                case 1:
+                    _d.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, (0, labelling_1.getCurrentLabels)(octokit, context, issueNumber)];
+                case 2:
+                    currentLabels = _d.sent();
+                    core.debug("remove-lgtm: found labels for issue ".concat(currentLabels));
+                    return [3 /*break*/, 4];
+                case 3:
+                    e_1 = _d.sent();
+                    throw new Error("could not get labels from issue: ".concat(e_1));
+                case 4:
+                    if (!currentLabels.includes('done')) return [3 /*break*/, 6];
+                    return [4 /*yield*/, (0, labelling_1.removeLabel)(octokit, context, issueNumber, 'done')];
+                case 5:
+                    _d.sent();
+                    _d.label = 6;
+                case 6:
+                    if (currentLabels.includes('review')) {
+                        return [2 /*return*/];
+                    }
+                    return [4 /*yield*/, (0, labelling_1.labelPresent)(octokit, context, 'in-review')];
+                case 7:
+                    labelIsPresent = _d.sent();
+                    console.log(labelIsPresent, "#########################################               onPrLabel");
+                    if (!(labelIsPresent != "review")) return [3 /*break*/, 8];
+                    return [2 /*return*/];
+                case 8:
+                    prLabelArray.push("review");
+                    return [4 /*yield*/, (0, labelling_1.labelIssue)(octokit, context, issueNumber, prLabelArray)];
+                case 9:
+                    _d.sent();
+                    _d.label = 10;
+                case 10: return [2 /*return*/];
             }
-            catch (error) {
-                core.setFailed(String(error));
-            }
-            return [2 /*return*/];
         });
     });
-}
-exports.run = run;
-run();
+};
+exports.onPrOnReview = onPrOnReview;

@@ -20,7 +20,7 @@ export async function run(): Promise<void> {
           handleIssueComment()
           break
 
-        case 'pull_request':
+        case 'pull_request_target':
           handlePullReq()
           break
 

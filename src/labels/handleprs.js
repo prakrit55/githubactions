@@ -59,48 +59,71 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.run = void 0;
+exports.handlePullReq = void 0;
 var core = __importStar(require("@actions/core"));
 var github = __importStar(require("@actions/github"));
-// import {assign} from './issueComment/assign'
-// import {unassign} from './issueComment/unassign'
-var handleIssueComment_1 = require("./issueComment/handleIssueComment");
-// import { assign } from './issueComment/assign'
-var assignd_1 = require("./labels/assignd");
-var unassigned_1 = require("./labels/unassigned");
-var handleprs_1 = require("./labels/handleprs");
-function run() {
-    return __awaiter(this, void 0, void 0, function () {
-        var action;
-        return __generator(this, function (_a) {
-            action = github.context.payload.action;
-            try {
-                switch (github.context.eventName) {
-                    case 'issue_comment':
-                        (0, handleIssueComment_1.handleIssueComment)();
-                        break;
-                    case 'pull_request_target':
-                        (0, handleprs_1.handlePullReq)();
-                        break;
-                    case 'issues':
-                        if (action == 'assigned') {
-                            (0, assignd_1.assigned)(github.context);
-                        }
-                        else {
-                            (0, unassigned_1.unassigned)();
-                        }
-                        break;
-                    default:
-                        core.error("".concat(github.context.eventName, " not yet supported"));
-                        break;
-                }
+var onPrClosed_1 = require("./onPrClosed");
+var onProgress_1 = require("./onProgress");
+var labelling_1 = require("../utills/labelling");
+var handlePullReq = function (context) {
+    if (context === void 0) { context = github.context; }
+    return __awaiter(void 0, void 0, void 0, function () {
+        var token, octokit, action, _a, runConfig, issueNumber_1, e_1;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    token = core.getInput('github-token', { required: true });
+                    console.log(token, "############################################# token");
+                    octokit = new github.GitHub(token);
+                    action = context.payload.action;
+                    _b.label = 1;
+                case 1:
+                    _b.trys.push([1, 8, , 9]);
+                    _a = action;
+                    switch (_a) {
+                        case 'opened' || 'reopened': return [3 /*break*/, 2];
+                        case 'closed': return [3 /*break*/, 4];
+                    }
+                    return [3 /*break*/, 6];
+                case 2:
+                    core.debug('pr opened');
+                    return [4 /*yield*/, (0, onProgress_1.onPrOnReview)(context).catch(function (e) { return __awaiter(void 0, void 0, void 0, function () {
+                            return __generator(this, function (_a) {
+                                return [2 /*return*/, e];
+                            });
+                        }); })];
+                case 3: return [2 /*return*/, _b.sent()];
+                case 4:
+                    runConfig = core.getInput('jobs', { required: false }).split(' ');
+                    return [4 /*yield*/, (0, onPrClosed_1.onPrClosed)(context)];
+                case 5:
+                    issueNumber_1 = _b.sent();
+                    issueNumber_1 !== null ? issueNumber_1 : undefined;
+                    runConfig.map(function (command) { return __awaiter(void 0, void 0, void 0, function () {
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0:
+                                    if (!(command == 'pr-merged' && issueNumber_1 != undefined)) return [3 /*break*/, 2];
+                                    return [4 /*yield*/, (0, labelling_1.labelIssue)(octokit, context, issueNumber_1, ["done"])];
+                                case 1:
+                                    _a.sent();
+                                    _a.label = 2;
+                                case 2: return [2 /*return*/];
+                            }
+                        });
+                    }); });
+                    return [3 /*break*/, 7];
+                case 6:
+                    core.error("".concat(github.context.eventName, " not yet supported"));
+                    return [3 /*break*/, 7];
+                case 7: return [3 /*break*/, 9];
+                case 8:
+                    e_1 = _b.sent();
+                    core.setFailed("".concat(e_1));
+                    return [3 /*break*/, 9];
+                case 9: return [2 /*return*/];
             }
-            catch (error) {
-                core.setFailed(String(error));
-            }
-            return [2 /*return*/];
         });
     });
-}
-exports.run = run;
-run();
+};
+exports.handlePullReq = handlePullReq;

@@ -59,48 +59,55 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.run = void 0;
-var core = __importStar(require("@actions/core"));
+exports.unassigned = void 0;
 var github = __importStar(require("@actions/github"));
-// import {assign} from './issueComment/assign'
-// import {unassign} from './issueComment/unassign'
-var handleIssueComment_1 = require("./issueComment/handleIssueComment");
-// import { assign } from './issueComment/assign'
-var assignd_1 = require("./labels/assignd");
-var unassigned_1 = require("./labels/unassigned");
-var handleprs_1 = require("./labels/handleprs");
-function run() {
-    return __awaiter(this, void 0, void 0, function () {
-        var action;
-        return __generator(this, function (_a) {
-            action = github.context.payload.action;
-            try {
-                switch (github.context.eventName) {
-                    case 'issue_comment':
-                        (0, handleIssueComment_1.handleIssueComment)();
-                        break;
-                    case 'pull_request_target':
-                        (0, handleprs_1.handlePullReq)();
-                        break;
-                    case 'issues':
-                        if (action == 'assigned') {
-                            (0, assignd_1.assigned)(github.context);
-                        }
-                        else {
-                            (0, unassigned_1.unassigned)();
-                        }
-                        break;
-                    default:
-                        core.error("".concat(github.context.eventName, " not yet supported"));
-                        break;
-                }
+var core = __importStar(require("@actions/core"));
+// import {getCommandArgs} from '../utils/command'
+var labelling_1 = require("../utills/labelling");
+/**
+ * /kind will add a kind/some-kind label
+ *
+ * @param context - the github actions event context
+ */
+var unassigned = function (context) {
+    if (context === void 0) { context = github.context; }
+    return __awaiter(void 0, void 0, void 0, function () {
+        var token, octokit, numberOfAssignees, issueNumber, response;
+        var _a;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    token = core.getInput('github-token', { required: true });
+                    octokit = new github.GitHub(token);
+                    numberOfAssignees = 0;
+                    issueNumber = (_a = context.payload.issue) === null || _a === void 0 ? void 0 : _a.number;
+                    if (issueNumber === undefined) {
+                        throw new Error("github context payload missing issue number: ".concat(context.payload));
+                    }
+                    console.log("###########################################          111111111111111111111111     assigning");
+                    return [4 /*yield*/, octokit.request('GET /repos/{owner}/{repo}/issues/{issue_number}/assignees', {
+                            owner: 'prakrit55', // Replace with your GitHub username
+                            repo: 'githubactions',
+                            issue_number: issueNumber
+                        })];
+                case 1:
+                    response = _b.sent();
+                    numberOfAssignees = response.data.length;
+                    console.log('Number of Assignees:', numberOfAssignees);
+                    //   const labelIsPresent = await labelPresent(octokit, context, 'assigned')
+                    //   console.log(labelIsPresent)
+                    //   if (labelIsPresent != "taken") {
+                    //     return
+                    //   }
+                    console.log("###########################################               assigning");
+                    if (!(numberOfAssignees == 0)) return [3 /*break*/, 3];
+                    return [4 /*yield*/, (0, labelling_1.removeLabel)(octokit, context, issueNumber, 'taken')];
+                case 2:
+                    _b.sent();
+                    _b.label = 3;
+                case 3: return [2 /*return*/];
             }
-            catch (error) {
-                core.setFailed(String(error));
-            }
-            return [2 /*return*/];
         });
     });
-}
-exports.run = run;
-run();
+};
+exports.unassigned = unassigned;
