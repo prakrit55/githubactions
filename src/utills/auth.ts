@@ -124,6 +124,8 @@ export const getConfirm = async (
     userPullRequestCount = prs.data.filter(pr => pr.user.login == arg).length
   }
 
+  console.log("##################################", prs, prs.data,                        prs.data)
+
   const issues = await octokit.issues.listForRepo ({
     owner: "prakrit55",
     repo: "githubactions",
