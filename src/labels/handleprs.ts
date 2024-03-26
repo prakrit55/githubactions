@@ -25,6 +25,7 @@ export const handlePullReq = async (
             return await onPrOnReview(context).catch(async e => {
               return e
             })
+            break
   
           case 'closed':
             const runConfig = core.getInput('jobs', {required: false}).split(' ')
