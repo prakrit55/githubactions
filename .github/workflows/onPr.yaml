@@ -34,4 +34,5 @@ jobs:
              npm run build
       - uses: ./
         with:
+          job: 'pr-merged'
           github-token: "${{ secrets.MY_NEW_GITHUB_TOKEN_APP }}"
