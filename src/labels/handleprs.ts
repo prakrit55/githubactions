@@ -13,20 +13,14 @@ import { labelIssue } from '../utills/labelling'
 export const handlePullReq = async (
     context: Context = github.context
   ): Promise<void> => {
-    const token = core.getInput('token', {required: true})
+    const token = core.getInput('github-token', {required: true})
     console.log(token, "############################################# token")
     const octokit = new github.GitHub(token)
     const action: string | undefined = context.payload.action;
 
         try {
         switch (action) {
-          case 'opened':
-            core.debug('pr opened')
-            return await onPrOnReview(context).catch(async e => {
-              return e
-            })
-
-            case 'reopened':
+          case 'opened' || 'reopened':
             core.debug('pr opened')
             return await onPrOnReview(context).catch(async e => {
               return e

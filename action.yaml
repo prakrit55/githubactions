@@ -2,9 +2,9 @@ name: 'prow-github-actions'
 description: 'Prow inspired github CI/CD actions'
 author: 'mmm'
 inputs:
-  # github-token:
-  #   description: "Token used by prow actions to accomplish jobs and tasks. May be a bot user access token or the limited scope Github token"
-  #   required: true
+  github-token:
+    description: "Token used by prow actions to accomplish jobs and tasks. May be a bot user access token or the limited scope Github token"
+    required: true
   prow-commands:
     description: "Comment keywords/commands to look for. Space delimited. Expect commands on own line."
     required: false

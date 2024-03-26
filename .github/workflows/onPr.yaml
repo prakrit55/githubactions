@@ -17,16 +17,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.MY_NEW_GITHUB_TOKEN_APP }}
       - name: Install & Build
         run: npm install
              npm run build
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v4.0.1
+      - uses: ./
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          slug: prakrit55/githubactions
+          github-token: "${{ secrets.MY_NEW_GITHUB_TOKEN_APP }}"
 
   if_merged:
     if: github.event.pull_request.merged == true
@@ -37,8 +33,6 @@ jobs:
       - name: Install & Build
         run: npm install
              npm run build
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v4.0.1
+      - uses: ./
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          slug: prakrit55/githubactions
+          github-token: "${{ secrets.MY_NEW_GITHUB_TOKEN_APP }}"
