@@ -20,10 +20,15 @@ export const handlePullReq = async (
 
         try {
         switch (action) {
-          case 'opened' || 'reopened':
+          case 'opened':
             core.debug('pr opened')
             await onPrOnReview(context)
             break
+          
+            case 'reopened':
+              core.debug('pr reopened')
+              await onPrOnReview(context)
+              break
   
           case 'closed':
             const runConfig = core.getInput('jobs', {required: false}).split(' ')
