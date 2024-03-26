@@ -38,7 +38,7 @@ export const handlePullReq = async (
             break
   
           default:
-            core.error(`${github.context.eventName} not yet supported`)
+            core.error(`${github.context.eventName} not yet supported ${action}`)
           break
         }
     } catch(e) {
